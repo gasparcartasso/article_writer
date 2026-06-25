@@ -9197,3 +9197,55 @@ File Path                              PID  Runtime      # DAGs    # Errors  Las
 /opt/airflow/dags/article wrtier.py    354  0.00s             1           0  0.27s           2026-06-25T03:56:26
 ================================================================================
 [2026-06-25T03:57:18.429+0000] {manager.py:452} INFO - Exiting gracefully upon receiving signal 15
+[2026-06-25T04:25:25.094+0000] {manager.py:470} INFO - Processing files using up to 2 processes at a time 
+[2026-06-25T04:25:25.095+0000] {manager.py:471} INFO - Process each file at most once every 30 seconds
+[2026-06-25T04:25:25.095+0000] {manager.py:472} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2026-06-25T04:25:25.095+0000] {manager.py:737} INFO - Searching for files in /opt/airflow/dags
+[2026-06-25T04:25:25.100+0000] {manager.py:740} INFO - There are 1 files in /opt/airflow/dags
+[2026-06-25T04:25:50.580+0000] {manager.py:878} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                            PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/article wrtier.py                           1           0  0.37s           2026-06-25T04:25:25
+================================================================================
+[2026-06-25T04:25:55.784+0000] {manager.py:452} INFO - Exiting gracefully upon receiving signal 15
+[2026-06-25T04:26:12.700+0000] {manager.py:470} INFO - Processing files using up to 2 processes at a time 
+[2026-06-25T04:26:12.701+0000] {manager.py:471} INFO - Process each file at most once every 30 seconds
+[2026-06-25T04:26:12.701+0000] {manager.py:472} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2026-06-25T04:26:12.701+0000] {manager.py:737} INFO - Searching for files in /opt/airflow/dags
+[2026-06-25T04:26:12.703+0000] {manager.py:740} INFO - There are 1 files in /opt/airflow/dags
+[2026-06-25T04:26:12.745+0000] {manager.py:878} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                              PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------  -----  ---------  --------  ----------  --------------  ----------
+/opt/airflow/dags/article wrtier.py    165  0.02s             0           0
+================================================================================
+[2026-06-25T04:26:42.924+0000] {manager.py:878} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                            PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/article wrtier.py                           1           0  0.35s           2026-06-25T04:26:13
+================================================================================
+[2026-06-25T04:27:13.566+0000] {manager.py:878} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                            PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/article wrtier.py                           1           0  0.32s           2026-06-25T04:26:43
+================================================================================
+[2026-06-25T04:27:44.127+0000] {manager.py:878} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                            PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/article wrtier.py                           1           0  0.27s           2026-06-25T04:27:14
+================================================================================
+[2026-06-25T04:27:45.476+0000] {manager.py:452} INFO - Exiting gracefully upon receiving signal 15
