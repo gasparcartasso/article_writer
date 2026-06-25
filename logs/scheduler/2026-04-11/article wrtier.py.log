@@ -1,0 +1,7 @@
+[2026-04-11T00:30:43.889+0000] {processor.py:161} INFO - Started process (PID=164) to work on /opt/airflow/dags/article wrtier.py
+[2026-04-11T00:30:43.891+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-04-11T00:30:43.893+0000] {logging_mixin.py:188} INFO - [2026-04-11T00:30:43.893+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-04-11T00:30:44.627+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-04-11T00:30:44.661+0000] {logging_mixin.py:188} INFO - [2026-04-11T00:30:44.661+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-11T00:30:44.682+0000] {logging_mixin.py:188} INFO - [2026-04-11T00:30:44.681+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-11 00:00:00+00:00, run_after=2026-04-12 00:00:00+00:00
+[2026-04-11T00:30:44.704+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.820 seconds

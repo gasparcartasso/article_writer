@@ -1,0 +1,352 @@
+[2026-05-04T11:32:58.510+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-05-04T11:32:58.532+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-05-01T00:00:00+00:00 [queued]>
+[2026-05-04T11:32:58.535+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-05-01T00:00:00+00:00 [queued]>
+[2026-05-04T11:32:58.535+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-05-04T11:32:58.540+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): write_article.write_task> on 2026-05-01 00:00:00+00:00
+[2026-05-04T11:32:58.542+0000] {standard_task_runner.py:63} INFO - Started process 188 to run task
+[2026-05-04T11:32:58.544+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'write_article.write_task', 'scheduled__2026-05-01T00:00:00+00:00', '--job-id', '61', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmpnatidxdn']
+[2026-05-04T11:32:58.546+0000] {standard_task_runner.py:91} INFO - Job 61: Subtask write_article.write_task
+[2026-05-04T11:32:58.566+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-05-01T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-05-04T11:32:58.603+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='write_article.write_task' AIRFLOW_CTX_EXECUTION_DATE='2026-05-01T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-05-01T00:00:00+00:00'
+[2026-05-04T11:32:58.603+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-05-04T11:33:53.727+0000] {python.py:237} INFO - Done. Returned value was: Build a Local Document Graph in Python for Smarter Search
+
+Most document folders start simple.
+
+A few PDFs. Some notes. A handful of CSVs. Then the folder grows into a working archive with no real structure beyond filenames and memory.
+
+Search breaks first.
+
+You remember a concept, not the exact file.
+You remember a company name, not which report mentioned it.
+You remember that two documents were related, but not why.
+
+A useful fix is to turn the folder into a lightweight knowledge graph.
+
+Not a giant enterprise graph.
+Not a research project.
+A practical local graph that connects files, entities, and keywords so you can query relationships instead of scanning filenames.
+
+This article builds that system in Python.
+
+⸻
+
+What this solves
+
+A normal folder gives you storage.
+
+A document graph gives you structure:
+
+• Which files mention the same people, companies, or topics
+• Which notes are closely related even if their filenames differ
+• Which documents act as bridges between themes
+• Which terms dominate a project folder
+• Which files should appear together in search results
+
+The approach is simple:
+
+• Read text files from a folder
+• Extract entities and keywords
+• Build a graph with NetworkX
+• Add similarity links between related documents
+• Query the graph for useful answers
+
+This works well for:
+
+• research notes
+• project documentation
+• meeting archives
+• legal or policy text collections
+• personal knowledge bases
+• small team document repositories
+
+⸻
+
+The graph design
+
+We will create three node types:
+
+• document
+• entity
+• keyword
+
+And three edge types:
+
+• mentions → document to entity
+• has_keyword → document to keyword
+• similar_to → document to document
+
+This gives enough structure to answer questions like:
+
+• Which documents mention the same organization?
+• What are the most central entities in this folder?
+• Which files are semantically close to a given note?
+• Which keywords connect otherwise separate clusters?
+
+⸻
+
+Project setup
+
+Install the packages:
+
+pip install networkx scikit-learn spacy pandas matplotlib
+python -m spacy download en_core_web_sm
+
+Create a folder like this:
+
+project/
+data/
+note1.txt
+note2.txt
+report.txt
+build_graph.py
+
+For this article, we will use plain text files. You can later extend the loader for PDFs, Word files, or markdown.
+
+⸻
+
+Sample documents
+
+Create a few example files in data/.
+
+note1.txt
+
+OpenAI signed a new partnership with Contoso to improve enterprise AI workflows. The project focuses on document search and secure retrieval.
+
+note2.txt
+
+Contoso expanded its internal knowledge platform in London. The platform uses graph search to connect policy documents, support notes, and engineering reports.
+
+report.txt
+
+A review of enterprise AI systems found that retrieval quality improves when documents are linked by entities, topics, and semantic similarity.
+
+⸻
+
+Step 1 → Load documents
+
+Start with a loader that reads all .txt files from a folder.
+
+build_graph.py
+
+from pathlib import Path
+
+def load_documents(folder):
+    docs = {}
+    for path in Path(folder).glob("*.txt"):
+        docs[path.name] = path.read_text(encoding="utf-8")
+    return docs
+
+docs = load_documents("data")
+for name, text in docs.items():
+    print(name, "->", text[:80])
+
+This gives a dictionary where the key is the filename and the value is the document text.
+
+⸻
+
+Step 2 → Extract entities and keywords
+
+We will use spaCy for named entities and a simple TF-IDF pass for keywords.
+
+from collections import defaultdict
+import spacy
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+nlp = spacy.load("en_core_web_sm")
+
+def extract_entities(text):
+    doc = nlp(text)
+    entities = []
+    for ent in doc.ents:
+        if ent.label_ in {"ORG", "PERSON", "GPE", "PRODUCT", "EVENT"}:
+            entities.append((ent.text.strip(), ent.label_))
+    return list(set(entities))
+
+def extract_keywords(docs, top_n=5):
+    names = list(docs.keys())
+    texts = list(docs.values())
+
+    vectorizer = TfidfVectorizer(stop_words="english", max_features=1000)
+    X = vectorizer.fit_transform(texts)
+    terms = vectorizer.get_feature_names_out()
+
+    doc_keywords = {}
+    for i, name in enumerate(names):
+        row = X[i].toarray().flatten()
+        top_idx = row.argsort()[-top_n:][::-1]
+        keywords = [terms[j] for j in top_idx if row[j] > 0]
+        doc_keywords[name] = keywords
+
+    return doc_keywords
+
+entity_map = {name: extract_entities(text) for name, text in docs.items()}
+keyword_map = extract_keywords(docs)
+
+print(entity_map)
+print(keyword_map)
+
+At this point each document has:
+
+• a set of named entities
+• a short list of high-signal keywords
+
+⸻
+
+Step 3 → Build the graph
+
+Now create the graph itself.
+
+import networkx as nx
+
+def build_knowledge_graph(docs, entity_map, keyword_map):
+    G = nx.Graph()
+
+    for doc_name, text in docs.items():
+        G.add_node(doc_name, type="document", text=text)
+
+        for entity_text, entity_label in entity_map[doc_name]:
+            entity_id = f"entity::{entity_text}"
+            G.add_node(entity_id, type="entity", label=entity_label, name=entity_text)
+            G.add_edge(doc_name, entity_id, relation="mentions")
+
+        for keyword in keyword_map[doc_name]:
+            keyword_id = f"keyword::{keyword}"
+            G.add_node(keyword_id, type="keyword", name=keyword)
+            G.add_edge(doc_name, keyword_id, relation="has_keyword")
+
+    return G
+
+G = build_knowledge_graph(docs, entity_map, keyword_map)
+
+print("Nodes:", G.number_of_nodes())
+print("Edges:", G.number_of_edges())
+
+This graph already supports useful queries.
+
+⸻
+
+Step 4 → Add semantic similarity between documents
+
+Entity links are strong, but they miss cases where two documents discuss the same topic using different wording.
+
+Add document-to-document similarity using TF-IDF cosine similarity.
+
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+def add_similarity_edges(G, docs, threshold=0.2):
+    names = list(docs.keys())
+    texts = list(docs.values())
+
+    vectorizer = TfidfVectorizer(stop_words="english")
+    X = vectorizer.fit_transform(texts)
+    sim = cosine_similarity(X)
+
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            score = sim[i, j]
+            if score >= threshold:
+                G.add_edge(
+                    names[i],
+                    names[j],
+                    relation="similar_to",
+                    weight=float(score)
+                )
+
+add_similarity_edges(G, docs, threshold=0.15)
+
+for u, v, data in G.edges(data=True):
+    if data.get("relation") == "similar_to":
+        print(u, "<->", v, data)
+
+Now the graph contains both explicit links and semantic links.
+
+That combination matters.
+
+A graph based only on entities can be too sparse.
+A graph based only on vector similarity can be too fuzzy.
+
+Together they create a more usable structure.
+
+⸻
+
+Step 5 → Query the graph
+
+Here are a few practical queries.
+
+Find all entities mentioned by a document
+
+def get_entities_for_document(G, doc_name):
+    return [
+        G.nodes[n]["name"]
+        for n in G.neighbors(doc_name)
+        if G.nodes[n]["type"] == "entity"
+    ]
+
+print(get_entities_for_document(G, "note1.txt"))
+
+Find documents connected to a specific entity
+
+def get_documents_for_entity(G, entity_name):
+    entity_id = f"entity::{entity_name}"
+    if entity_id not in G:
+        return []
+    return [
+        n for n in G.neighbors(entity_id)
+        if G.nodes[n]["type"] == "document"
+    ]
+
+print(get_documents_for_entity(G, "Contoso"))
+
+Find similar documents
+
+def get_similar_documents(G, doc_name):
+    results = []
+    for neighbor in G.neighbors(doc_name):
+        edge = G.get_edge_data(doc_name, neighbor)
+        if G.nodes[neighbor]["type"] == "document" and edge.get("relation") == "similar_to":
+            results.append((neighbor, edge.get("weight", 0)))
+    return sorted(results, key=lambda x: x[1], reverse=True)
+
+print(get_similar_documents(G, "note1.txt"))
+
+Find the most central nodes
+
+def top_central_nodes(G, top_n=10):
+    centrality = nx.degree_centrality(G)
+    ranked = sorted(centrality.items(), key=lambda x: x[1], reverse=True)
+    return ranked[:top_n]
+
+for node, score in top_central_nodes(G):
+    print(node, round(score, 3), G.nodes[node]["type"])
+
+This last query is useful because central nodes often reveal:
+
+• recurring organizations
+• dominant topics
+• bridge documents
+• noisy terms that should be filtered out
+
+⸻
+
+Step 6 → Improve search with graph expansion
+
+A standard keyword search only returns direct matches.
+
+A graph-aware search can expand results through related entities and similar documents.
+
+Here is a simple version.
+
+def graph_search(G, query):
+    query_lower = query.lower()
+    scores = defaultdict(float)
+
+    for node, attrs in G.nodes(data=True):
+        node_name = attrs.get("name", "")
+       
+[2026-05-04T11:33:53.732+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-05-04T11:33:53.804+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_single_dag, task_id=write_article.write_task, run_id=scheduled__2026-05-01T00:00:00+00:00, execution_date=20260501T000000, start_date=20260504T113258, end_date=20260504T113353
+[2026-05-04T11:33:53.845+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-05-04T11:33:53.869+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-05-04T11:33:53.871+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

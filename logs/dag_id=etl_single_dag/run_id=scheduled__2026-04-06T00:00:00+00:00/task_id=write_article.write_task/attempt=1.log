@@ -1,0 +1,480 @@
+[2026-04-07T03:44:47.170+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-04-07T03:44:47.180+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-04-06T00:00:00+00:00 [queued]>
+[2026-04-07T03:44:47.182+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-04-06T00:00:00+00:00 [queued]>
+[2026-04-07T03:44:47.182+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-04-07T03:44:47.185+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): write_article.write_task> on 2026-04-06 00:00:00+00:00
+[2026-04-07T03:44:47.187+0000] {standard_task_runner.py:63} INFO - Started process 442 to run task
+[2026-04-07T03:44:47.188+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'write_article.write_task', 'scheduled__2026-04-06T00:00:00+00:00', '--job-id', '23', '--raw', '--subdir', 'DAGS_FOLDER/etl copy.py', '--cfg-path', '/tmp/tmpw4aryg73']
+[2026-04-07T03:44:47.189+0000] {standard_task_runner.py:91} INFO - Job 23: Subtask write_article.write_task
+[2026-04-07T03:44:47.205+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-04-06T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-04-07T03:44:47.229+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='write_article.write_task' AIRFLOW_CTX_EXECUTION_DATE='2026-04-06T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-04-06T00:00:00+00:00'
+[2026-04-07T03:44:47.230+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-04-07T03:45:35.438+0000] {python.py:237} INFO - Done. Returned value was: Calibrated Uncertainty for Tabular Regression in Python
+
+Most regression systems return a single number.
+
+Revenue next month. Delivery time. Energy demand. Claim cost. Churn value. A point estimate is useful, but it hides the part that usually matters most in production: how wrong the model could be.
+
+A forecast of 120 is not the same prediction if the realistic range is 118–122 versus 70–190.
+
+For many data products, the real upgrade is not a more complex model. It is a model that can express uncertainty in a way the business can actually use.
+
+This article builds a practical solution in Python for probabilistic regression on tabular data. The goal is simple:
+
+• predict a full range, not just a point  
+• avoid strong distribution assumptions  
+• keep the workflow compatible with standard machine learning stacks  
+• produce intervals that can be checked and improved
+
+The method uses quantile regression with LightGBM.
+
+It is fast, production-friendly, and works well when the target distribution is skewed, heavy-tailed, or changes with the input features.
+
+⸻
+
+Why quantile regression matters
+
+A standard regression model learns the conditional mean:
+
+E[y | x]
+
+That is often not what decision systems need.
+
+A logistics team may want a conservative estimate for delivery duration.
+
+A finance team may want the 90th percentile of loss.
+
+An operations team may want a lower and upper bound to plan staffing.
+
+Quantile regression predicts conditional quantiles directly:
+
+• 0.1 quantile → a low-end estimate  
+• 0.5 quantile → the median  
+• 0.9 quantile → a high-end estimate
+
+With those three values, you already have a practical uncertainty band.
+
+This is especially useful when:
+
+• errors are asymmetric  
+• outliers matter  
+• variance changes across the feature space  
+• target values are not close to normal
+
+Instead of forcing one global error pattern, quantile regression lets uncertainty adapt locally.
+
+⸻
+
+The problem setup
+
+We will create a synthetic tabular dataset with heteroscedastic noise.
+
+That means the noise level changes depending on the input.
+
+This is exactly where point prediction starts to fail as a complete answer.
+
+Our plan:
+
+• generate data  
+• train three LightGBM models for q=0.1, q=0.5, q=0.9  
+• evaluate interval quality  
+• fix quantile crossing  
+• package the result into a reusable predictor
+
+⸻
+
+Step 1 — Create a dataset where uncertainty changes with x
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+np.random.seed(42)
+
+n = 5000
+
+x1 = np.random.uniform(0, 10, n)
+x2 = np.random.normal(0, 1, n)
+x3 = np.random.binomial(1, 0.4, n)
+
+noise_scale = 0.5 + 0.3 * x1
+noise = np.random.normal(0, noise_scale)
+
+y = 10 + 2.5 * x1 - 1.8 * x2 + 4 * x3 + np.sin(x1) * 3 + noise
+
+df = pd.DataFrame({
+    "x1": x1,
+    "x2": x2,
+    "x3": x3,
+    "y": y
+})
+
+X = df[["x1", "x2", "x3"]]
+target = df["y"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, target, test_size=0.2, random_state=42
+)
+
+The key detail is noise_scale.
+
+As x1 grows, the target becomes more uncertain. A good probabilistic model should learn wider intervals in that region.
+
+⸻
+
+Step 2 — Train quantile models with LightGBM
+
+LightGBM supports quantile loss directly.
+
+We train one model per quantile.
+
+from lightgbm import LGBMRegressor
+
+def train_quantile_model(alpha):
+    model = LGBMRegressor(
+        objective="quantile",
+        alpha=alpha,
+        n_estimators=300,
+        learning_rate=0.05,
+        num_leaves=31,
+        min_child_samples=20,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
+    return model
+
+q10_model = train_quantile_model(0.1)
+q50_model = train_quantile_model(0.5)
+q90_model = train_quantile_model(0.9)
+
+pred_q10 = q10_model.predict(X_test)
+pred_q50 = q50_model.predict(X_test)
+pred_q90 = q90_model.predict(X_test)
+
+Now we have three predictions for every row:
+
+• lower bound  
+• median  
+• upper bound
+
+This is already enough to support many business decisions.
+
+⸻
+
+Step 3 — Check whether the interval is useful
+
+A prediction interval is only useful if it is both:
+
+• calibrated  
+• reasonably narrow
+
+Calibration means the true value falls inside the interval at about the expected rate.
+
+For a 10%–90% interval, we want roughly 80% coverage.
+
+import numpy as np
+
+def interval_coverage(y_true, lower, upper):
+    inside = (y_true >= lower) & (y_true <= upper)
+    return np.mean(inside)
+
+def mean_interval_width(lower, upper):
+    return np.mean(upper - lower)
+
+coverage = interval_coverage(y_test.values, pred_q10, pred_q90)
+width = mean_interval_width(pred_q10, pred_q90)
+
+print("80% interval coverage:", round(coverage, 4))
+print("Mean interval width:", round(width, 4))
+
+You should expect coverage near 0.8 if the model is well calibrated.
+
+If coverage is much lower, the intervals are too confident.
+
+If coverage is much higher, the intervals may be too wide to be useful.
+
+⸻
+
+Step 4 — Evaluate the median prediction separately
+
+The median is often more robust than the mean when targets are skewed or noisy.
+
+from sklearn.metrics import mean_absolute_error, median_absolute_error
+
+mae = mean_absolute_error(y_test, pred_q50)
+medae = median_absolute_error(y_test, pred_q50)
+
+print("Median model MAE:", round(mae, 4))
+print("Median model MedAE:", round(medae, 4))
+
+This gives a point-performance view, while coverage and width give the uncertainty view.
+
+Both matter.
+
+⸻
+
+Step 5 — Handle quantile crossing
+
+A practical issue with separate quantile models is crossing.
+
+Sometimes the predicted 10th percentile is higher than the 50th, or the 90th is lower than the 50th.
+
+That violates the ordering of quantiles.
+
+A simple post-processing fix is enough for many applications.
+
+pred_q10_fixed = np.minimum(pred_q10, pred_q50)
+pred_q90_fixed = np.maximum(pred_q90, pred_q50)
+
+pred_q10_fixed = np.minimum(pred_q10_fixed, pred_q90_fixed)
+pred_q90_fixed = np.maximum(pred_q90_fixed, pred_q10_fixed)
+
+coverage_fixed = interval_coverage(y_test.values, pred_q10_fixed, pred_q90_fixed)
+width_fixed = mean_interval_width(pred_q10_fixed, pred_q90_fixed)
+
+print("Fixed interval coverage:", round(coverage_fixed, 4))
+print("Fixed mean interval width:", round(width_fixed, 4))
+
+This monotonic correction is simple and effective.
+
+For stricter settings, you can use joint modeling or isotonic post-processing, but the simple fix is often enough in production pipelines.
+
+⸻
+
+Step 6 — Inspect how uncertainty changes across the feature space
+
+One of the main advantages of quantile regression is local uncertainty.
+
+Let’s look at interval width as x1 changes.
+
+results = X_test.copy()
+results["y_true"] = y_test.values
+results["q10"] = pred_q10_fixed
+results["q50"] = pred_q50
+results["q90"] = pred_q90_fixed
+results["interval_width"] = results["q90"] - results["q10"]
+
+summary = results.groupby(pd.cut(results["x1"], bins=6))["interval_width"].mean()
+print(summary)
+
+If the model learned correctly, interval width should increase in higher x1 bins.
+
+That is exactly what a plain regression model cannot express by itself.
+
+⸻
+
+Why this works well in real tabular systems
+
+Quantile boosting is useful because it stays close to the tools teams already trust.
+
+It fits naturally into feature-engineered tabular workflows.
+
+It also avoids making assumptions like:
+
+• errors are Gaussian  
+• variance is constant  
+• uncertainty is symmetric
+
+Those assumptions break often in business data.
+
+Examples where quantile prediction is more useful than point prediction:
+
+• demand planning → plan for p50 and p90, not one number  
+• pricing → estimate downside and upside outcomes  
+• insurance → reserve against tail risk  
+• operations → staff for uncertainty, not just average load  
+• ETAs → show realistic ranges instead of unstable single times
+
+⸻
+
+A reusable predictor class
+
+The pattern becomes easier to deploy if wrapped in a small class.
+
+from lightgbm import LGBMRegressor
+import numpy as np
+
+class QuantileIntervalRegressor:
+    def __init__(self, quantiles=(0.1, 0.5, 0.9), **model_params):
+        self.quantiles = quantiles
+        self.model_params = model_params
+        self.models = {}
+
+    def fit(self, X, y):
+        for q in self.quantiles:
+            model = LGBMRegressor(
+                objective="quantile",
+                alpha=q,
+                **self.model_params
+            )
+            model.fit(X, y)
+            self.models[q] = model
+        return self
+
+    def predict(self, X):
+        preds = {q: self.models[q].predict(X) for q in self.quantiles}
+
+        sorted_qs = sorted(self.quantiles)
+        for i in range(1, len(sorted_qs)):
+            prev_q = sorted_qs[i - 1]
+            curr_q = sorted_qs[i]
+            preds[curr_q] = np.maximum(preds[curr_q], preds[prev_q])
+
+        return preds
+
+model = QuantileIntervalRegressor(
+    quantiles=(0.1, 0.5, 0.9),
+    n_estimators=300,
+    learning_rate=0.05,
+    num_leaves=31,
+    min_child_samples=20,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+preds = model.predict(X_test)
+
+print("q10 sample:", preds[0.1][:5])
+print("q50 sample:", preds[0.5][:5])
+print("q90 sample:", preds[0.9][:5])
+
+This gives a compact interface that can be used in batch scoring or APIs.
+
+⸻
+
+How to evaluate quantile models correctly
+
+A common mistake is to judge probabilistic models only with RMSE or MAE.
+
+Those metrics are incomplete here.
+
+For quantile systems, track at least these:
+
+• Pinball loss for each quantile  
+• Coverage of the target interval  
+• Mean interval width  
+• Coverage by segment, not only global coverage  
+• Stability over time
+
+Pinball loss is the standard objective for quantile prediction.
+
+def pinball_loss(y_true, y_pred, q):
+    error = y_true - y_pred
+    return np.mean(np.maximum(q * error, (q - 1) * error))
+
+for q, pred in [(0.1, pred_q10_fixed), (0.5, pred_q50), (0.9, pred_q90_fixed)]:
+    loss = pinball_loss(y_test.values, pred, q)
+    print(f"Pinball loss q={q}: {loss:.4f}")
+
+Segment-level checks matter because a model can look calibrated overall while failing badly for specific groups.
+
+For example:
+
+• one geography  
+• one product line  
+• one customer segment  
+• one target range
+
+Global averages can hide local failures.
+
+⸻
+
+A simple calibration improvement step
+
+If your interval coverage is consistently off, you can recalibrate on a validation set.
+
+One practical method is to widen or shrink the interval around the median.
+
+def recalibrate_interval(q10, q50, q90, scale):
+    lower = q50 - scale * (q50 - q10)
+    upper = q50 + scale * (q90 - q50)
+    return lower, upper
+
+best_scale = None
+best_gap = float("inf")
+
+for scale in np.arange(0.8, 1.31, 0.05):
+    lower, upper = recalibrate_interval(pred_q10_fixed, pred_q50, pred_q90_fixed, scale)
+    cov = interval_coverage(y_test.values, lower, upper)
+    gap = abs(cov - 0.8)
+    if gap < best_gap:
+        best_gap = gap
+        best_scale = scale
+
+print("Best scale:", best_scale)
+
+lower_cal, upper_cal = recalibrate_interval(
+    pred_q10_fixed, pred_q50, pred_q90_fixed, best_scale
+)
+
+print("Calibrated coverage:", round(interval_coverage(y_test.values, lower_cal, upper_cal), 4))
+print("Calibrated width:", round(mean_interval_width(lower_cal, upper_cal), 4))
+
+In a real workflow, tune this scale on validation data and report final performance on a separate test set.
+
+That keeps the evaluation honest.
+
+⸻
+
+When this approach is the right choice
+
+Use quantile boosting when:
+
+• your data is tabular  
+• you need interpretable uncertainty bands  
+• your target distribution is messy  
+• you want a fast baseline that is hard to beat  
+• you need something deployable without a research stack
+
+It is a strong fit for many applied data science teams because it balances:
+
+• flexibility  
+• speed  
+• practicality  
+• business usefulness
+
+⸻
+
+When it is not enough
+
+Quantile regression is not a complete answer for every uncertainty problem.
+
+It may be limited when:
+
+• you need coherent multistep forecast distributions  
+• you need joint uncertainty across multiple targets  
+• you need uncertainty from very small datasets  
+• you need causal interpretation rather than predictive intervals
+
+In those cases, you may need conformal prediction, Bayesian models, distributional forests, or sequence-specific probabilistic methods.
+
+Still, for a large share of tabular regression work, quantile boosting is one of the highest-leverage upgrades you can make.
+
+⸻
+
+Final takeaway
+
+A single prediction is often too small an answer for a real decision.
+
+Quantile regression gives you a practical way to move from “what is the number?” to “what is the likely range?”
+
+That shift changes how models get used.
+
+Teams can plan around uncertainty instead of discovering it later.
+
+Products can expose confidence bands instead of pretending every estimate is equally certain.
+
+And the implementation is not heavy.
+
+Three LightGBM models, a few evaluation functions, and a calibration check are enough to build a regression system that speaks in ranges instead of guesses.
+
+If your current model predicts one number and your users still ask “how sure is that?”, this is the layer to add next.
+[2026-04-07T03:45:35.438+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-04-07T03:45:35.453+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_single_dag, task_id=write_article.write_task, run_id=scheduled__2026-04-06T00:00:00+00:00, execution_date=20260406T000000, start_date=20260407T034447, end_date=20260407T034535
+[2026-04-07T03:45:35.461+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-04-07T03:45:35.469+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-04-07T03:45:35.470+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

@@ -1,0 +1,84 @@
+[2026-04-10T00:11:23.026+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-04-10T00:11:23.056+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.extract_TOP_10.extract_task_TOP_10 scheduled__2026-04-09T00:00:00+00:00 [queued]>
+[2026-04-10T00:11:23.064+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.extract_TOP_10.extract_task_TOP_10 scheduled__2026-04-09T00:00:00+00:00 [queued]>
+[2026-04-10T00:11:23.064+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-04-10T00:11:23.075+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_TOP_10.extract_task_TOP_10> on 2026-04-09 00:00:00+00:00
+[2026-04-10T00:11:23.078+0000] {standard_task_runner.py:63} INFO - Started process 178 to run task
+[2026-04-10T00:11:23.081+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'extract_TOP_10.extract_task_TOP_10', 'scheduled__2026-04-09T00:00:00+00:00', '--job-id', '29', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmpwd38he5o']
+[2026-04-10T00:11:23.082+0000] {standard_task_runner.py:91} INFO - Job 29: Subtask extract_TOP_10.extract_task_TOP_10
+[2026-04-10T00:11:23.125+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.extract_TOP_10.extract_task_TOP_10 scheduled__2026-04-09T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-04-10T00:11:23.191+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='extract_TOP_10.extract_task_TOP_10' AIRFLOW_CTX_EXECUTION_DATE='2026-04-09T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-04-09T00:00:00+00:00'
+[2026-04-10T00:11:23.192+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-04-10T00:11:23.754+0000] {local_task_job_runner.py:124} ERROR - Received SIGTERM. Terminating subprocesses
+[2026-04-10T00:11:23.755+0000] {process_utils.py:132} INFO - Sending 15 to group 178. PIDs of all processes in the group: [178]
+[2026-04-10T00:11:23.756+0000] {process_utils.py:87} INFO - Sending the signal 15 to group 178
+[2026-04-10T00:11:23.756+0000] {taskinstance.py:2611} ERROR - Received SIGTERM. Terminating subprocesses.
+[2026-04-10T00:11:23.757+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-04-10T00:11:23.769+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/article wrtier.py", line 21, in get_top_feeds
+    response = requests.get(url, headers=headers)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/requests/adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 793, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 537, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/urllib3/connection.py", line 466, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/http/client.py", line 1395, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.11/http/client.py", line 325, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/http/client.py", line 286, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/socket.py", line 706, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/ssl.py", line 1314, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/ssl.py", line 1166, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 2613, in signal_handler
+    raise AirflowTaskTerminated("Task received SIGTERM signal")
+airflow.exceptions.AirflowTaskTerminated: Task received SIGTERM signal
+[2026-04-10T00:11:23.776+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=etl_single_dag, task_id=extract_TOP_10.extract_task_TOP_10, run_id=scheduled__2026-04-09T00:00:00+00:00, execution_date=20260409T000000, start_date=20260410T001123, end_date=20260410T001123
+[2026-04-10T00:11:23.815+0000] {process_utils.py:80} INFO - Process psutil.Process(pid=178, status='terminated', exitcode=2, started='00:11:22') (178) terminated with exit code 2
+[2026-04-10T00:11:23.816+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 143
+[2026-04-10T00:11:23.831+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check

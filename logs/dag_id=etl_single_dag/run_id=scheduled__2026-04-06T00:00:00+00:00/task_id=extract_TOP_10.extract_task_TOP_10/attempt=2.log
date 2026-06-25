@@ -1,0 +1,17 @@
+[2026-04-07T03:44:24.914+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-04-07T03:44:24.924+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.extract_TOP_10.extract_task_TOP_10 scheduled__2026-04-06T00:00:00+00:00 [queued]>
+[2026-04-07T03:44:24.926+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.extract_TOP_10.extract_task_TOP_10 scheduled__2026-04-06T00:00:00+00:00 [queued]>
+[2026-04-07T03:44:24.926+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 2
+[2026-04-07T03:44:24.929+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extract_TOP_10.extract_task_TOP_10> on 2026-04-06 00:00:00+00:00
+[2026-04-07T03:44:24.931+0000] {standard_task_runner.py:63} INFO - Started process 429 to run task
+[2026-04-07T03:44:24.932+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'extract_TOP_10.extract_task_TOP_10', 'scheduled__2026-04-06T00:00:00+00:00', '--job-id', '19', '--raw', '--subdir', 'DAGS_FOLDER/etl copy.py', '--cfg-path', '/tmp/tmpq3tu7x_x']
+[2026-04-07T03:44:24.933+0000] {standard_task_runner.py:91} INFO - Job 19: Subtask extract_TOP_10.extract_task_TOP_10
+[2026-04-07T03:44:24.949+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.extract_TOP_10.extract_task_TOP_10 scheduled__2026-04-06T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-04-07T03:44:24.975+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='extract_TOP_10.extract_task_TOP_10' AIRFLOW_CTX_EXECUTION_DATE='2026-04-06T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-04-06T00:00:00+00:00'
+[2026-04-07T03:44:24.975+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-04-07T03:44:25.784+0000] {python.py:237} INFO - Done. Returned value was: ['7abe0fe678d1', 'c7622d353319', '4ea6779acfb3', 'eeb660fd2db1', '01f524e95c92', '0d4975db52ae', 'a9e8f48d1a00', '0f53b5591465', 'd2a4b0a828a5', '660577d8077c']
+[2026-04-07T03:44:25.785+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-04-07T03:44:25.805+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_single_dag, task_id=extract_TOP_10.extract_task_TOP_10, run_id=scheduled__2026-04-06T00:00:00+00:00, execution_date=20260406T000000, start_date=20260407T034424, end_date=20260407T034425
+[2026-04-07T03:44:25.816+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-04-07T03:44:25.831+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-04-07T03:44:25.831+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

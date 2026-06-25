@@ -1,0 +1,608 @@
+[2026-04-24T00:16:39.518+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-04-24T00:16:39.527+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-04-23T00:00:00+00:00 [queued]>
+[2026-04-24T00:16:39.529+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-04-23T00:00:00+00:00 [queued]>
+[2026-04-24T00:16:39.529+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-04-24T00:16:39.533+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): write_article.write_task> on 2026-04-23 00:00:00+00:00
+[2026-04-24T00:16:39.534+0000] {standard_task_runner.py:63} INFO - Started process 180 to run task
+[2026-04-24T00:16:39.535+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'write_article.write_task', 'scheduled__2026-04-23T00:00:00+00:00', '--job-id', '41', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmpruid2lu2']
+[2026-04-24T00:16:39.536+0000] {standard_task_runner.py:91} INFO - Job 41: Subtask write_article.write_task
+[2026-04-24T00:16:39.551+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-04-23T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-04-24T00:16:39.576+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='write_article.write_task' AIRFLOW_CTX_EXECUTION_DATE='2026-04-23T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-04-23T00:00:00+00:00'
+[2026-04-24T00:16:39.576+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-04-24T00:17:37.719+0000] {python.py:237} INFO - Done. Returned value was: Token Budgeting for Faster, Cheaper LLM Pipelines in Python
+
+Large language model apps rarely fail because the model is weak.
+
+They fail because the prompt is bloated, the context is noisy, and every request pays for text that does not improve the answer.
+
+This is becoming one of the most practical engineering problems in AI work right now. Teams are wiring models into search, support tools, coding assistants, analytics layers, and internal copilots. Then the bill arrives, latency climbs, and quality becomes inconsistent. The model is not always the problem. The prompt budget usually is.
+
+A useful fix is to treat tokens like a resource with explicit allocation rules.
+
+This article builds a simple token budgeting system in Python. The goal is not to invent a new model. The goal is to decide what gets into the prompt, what gets compressed, and what gets dropped before the request is sent.
+
+By the end, you will have a working pattern for:
+• scoring context chunks
+• reserving space for system instructions and user input
+• trimming low-value context
+• compressing long history
+• estimating cost before inference
+
+This approach works well for:
+• retrieval-augmented generation
+• chat assistants
+• coding tools
+• document question answering
+• agent pipelines with multiple model calls
+
+Why token budgeting matters
+
+A prompt is a packed container with a hard limit.
+
+Inside that container, different types of text compete for space:
+• system instructions
+• tool definitions
+• user request
+• retrieved documents
+• chat history
+• examples
+• chain-of-thought substitutes such as reasoning scaffolds
+
+If you let everything flow in unchecked, three things happen:
+• latency increases
+• cost increases
+• answer quality often drops because irrelevant context dilutes signal
+
+More context is not automatically better context.
+
+In practice, the best prompt is often the smallest prompt that still preserves the information needed for the task.
+
+The core idea
+
+A token budgeter is a small layer that sits between your application and the model API.
+
+It answers four questions before every call:
+• How many tokens can I spend in total?
+• How many tokens must be reserved for the response?
+• Which context items are most valuable?
+• What should be compressed or removed?
+
+A simple budgeting policy can outperform “send everything” surprisingly often.
+
+Designing the budget
+
+A practical budget has fixed reservations and flexible allocations.
+
+Example:
+• model context window: 16,000 tokens
+• reserve for model output: 1,500 tokens
+• reserve for system prompt: 500 tokens
+• reserve for user query: 400 tokens
+• remaining budget for context: 13,600 tokens
+
+That remaining context budget is where selection happens.
+
+A useful priority order is:
+• critical instructions
+• current user query
+• top-ranked retrieved passages
+• recent conversation turns
+• compressed summary of older turns
+• optional examples
+
+The implementation below uses token estimation, scoring, and truncation. It is intentionally lightweight so you can adapt it to any model provider.
+
+A simple token estimator in Python
+
+Exact tokenization depends on the model. For a provider-specific production system, use the official tokenizer. For budgeting logic, a rough estimate is often enough.
+
+A common approximation is that one token is about 4 characters in English text. It is imperfect, but useful for planning.
+
+code:
+from dataclasses import dataclass
+from typing import List, Dict, Any
+
+
+def estimate_tokens(text: str) -> int:
+    if not text:
+        return 0
+    return max(1, len(text) // 4)
+
+This gives us a cheap token estimate for every text fragment.
+
+Representing prompt components
+
+We will define a context item with:
+• text
+• source type
+• priority score
+• estimated tokens
+• whether it is compressible
+
+code:
+from dataclasses import dataclass, field
+
+
+@dataclass
+class ContextItem:
+    text: str
+    source: str
+    priority: float
+    compressible: bool = True
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def tokens(self) -> int:
+        return estimate_tokens(self.text)
+
+Now we can store retrieved chunks, chat turns, examples, or notes in one structure.
+
+Building the token budgeter
+
+The budgeter will:
+• compute available context space
+• sort items by value density
+• keep high-value items first
+• compress large, lower-priority items when needed
+• stop when the budget is full
+
+code:
+class TokenBudgeter:
+    def __init__(
+        self,
+        max_context_tokens: int,
+        reserved_output_tokens: int,
+        reserved_system_tokens: int,
+        reserved_user_tokens: int,
+    ):
+        self.max_context_tokens = max_context_tokens
+        self.reserved_output_tokens = reserved_output_tokens
+        self.reserved_system_tokens = reserved_system_tokens
+        self.reserved_user_tokens = reserved_user_tokens
+
+    @property
+    def available_context_budget(self) -> int:
+        budget = (
+            self.max_context_tokens
+            - self.reserved_output_tokens
+            - self.reserved_system_tokens
+            - self.reserved_user_tokens
+        )
+        return max(0, budget)
+
+    def compress_text(self, text: str, target_tokens: int) -> str:
+        words = text.split()
+        if not words:
+            return text
+
+        current_tokens = estimate_tokens(text)
+        if current_tokens <= target_tokens:
+            return text
+
+        ratio = target_tokens / current_tokens
+        keep_words = max(1, int(len(words) * ratio))
+        compressed = " ".join(words[:keep_words])
+        return compressed + " …"
+
+    def select_context(self, items: List[ContextItem]) -> List[ContextItem]:
+        budget = self.available_context_budget
+
+        ranked = sorted(
+            items,
+            key=lambda x: (x.priority / max(x.tokens, 1)),
+            reverse=True
+        )
+
+        selected = []
+        used = 0
+
+        for item in ranked:
+            if used + item.tokens <= budget:
+                selected.append(item)
+                used += item.tokens
+                continue
+
+            remaining = budget - used
+            if remaining <= 0:
+                break
+
+            if item.compressible and remaining >= 20:
+                compressed_text = self.compress_text(item.text, remaining)
+                compressed_item = ContextItem(
+                    text=compressed_text,
+                    source=item.source,
+                    priority=item.priority * 0.8,
+                    compressible=False,
+                    metadata={**item.metadata, "compressed": True}
+                )
+                if compressed_item.tokens <= remaining:
+                    selected.append(compressed_item)
+                    used += compressed_item.tokens
+
+        return selected
+
+This is the basic engine.
+
+The ranking uses priority divided by token count. That means a short, high-value chunk can beat a long, mediocre chunk. In many LLM systems, this is exactly what you want.
+
+Creating realistic context items
+
+Let’s simulate a document QA system with:
+• retrieved passages
+• recent chat history
+• older conversation summary
+• few-shot examples
+
+code:
+items = [
+    ContextItem(
+        text="The refund policy allows full reimbursement within 30 days if the product is unused and returned with proof of purchase.",
+        source="retrieval",
+        priority=0.95,
+        metadata={"doc_id": "policy_1"}
+    ),
+    ContextItem(
+        text="Customers requesting refunds after 30 days may receive store credit at the discretion of support managers.",
+        source="retrieval",
+        priority=0.75,
+        metadata={"doc_id": "policy_2"}
+    ),
+    ContextItem(
+        text="User: I bought the device six weeks ago and it stopped working yesterday. Assistant: I can help check warranty and refund options.",
+        source="chat_history",
+        priority=0.65,
+        metadata={"turn": 8}
+    ),
+    ContextItem(
+        text="Earlier conversation summary: customer purchased a device, reported a malfunction, asked about refund eligibility, and mentioned missing original packaging.",
+        source="summary",
+        priority=0.55,
+        metadata={"turn_range": "1-7"}
+    ),
+    ContextItem(
+        text="Example: When a customer is outside the refund window, explain the policy clearly, then offer warranty support or store credit if applicable.",
+        source="few_shot",
+        priority=0.45
+    ),
+]
+
+Now define the budget.
+
+code:
+budgeter = TokenBudgeter(
+    max_context_tokens=1000,
+    reserved_output_tokens=200,
+    reserved_system_tokens=120,
+    reserved_user_tokens=80,
+)
+
+selected = budgeter.select_context(items)
+
+for item in selected:
+    print(f"{item.source:12} | tokens={item.tokens:4} | priority={item.priority:.2f}")
+    print(item.text)
+    print("-" * 60)
+
+This will select the most useful context that fits inside the remaining space.
+
+Adding cost estimation
+
+Budgeting becomes much more useful when it also estimates money.
+
+If your provider charges per input token and output token, you can forecast request cost before sending it.
+
+code:
+def estimate_request_cost(
+    input_tokens: int,
+    output_tokens: int,
+    input_cost_per_million: float,
+    output_cost_per_million: float
+) -> float:
+    input_cost = (input_tokens / 1_000_000) * input_cost_per_million
+    output_cost = (output_tokens / 1_000_000) * output_cost_per_million
+    return input_cost + output_cost
+
+def total_input_tokens(system_prompt: str, user_prompt: str, context_items: List[ContextItem]) -> int:
+    return (
+        estimate_tokens(system_prompt)
+        + estimate_tokens(user_prompt)
+        + sum(item.tokens for item in context_items)
+    )
+
+system_prompt = "You are a support assistant. Answer using company policy only. If policy is unclear, say so."
+user_prompt = "Am I eligible for a refund if I bought the device six weeks ago and it failed?"
+
+input_tokens = total_input_tokens(system_prompt, user_prompt, selected)
+estimated_cost = estimate_request_cost(
+    input_tokens=input_tokens,
+    output_tokens=200,
+    input_cost_per_million=3.0,
+    output_cost_per_million=15.0
+)
+
+print("Estimated input tokens:", input_tokens)
+print("Estimated request cost: $", round(estimated_cost, 6))
+
+This is especially useful in batch pipelines, agent loops, and internal tools where token usage can silently expand over time.
+
+Improving context scoring
+
+The earlier example used manually assigned priorities. In a real system, priorities should come from signals.
+
+Good scoring features include:
+• retrieval similarity score
+• recency
+• source reliability
+• document type
+• user intent match
+• whether the chunk contains an explicit answer
+• whether the chunk duplicates already selected content
+
+A simple weighted scoring function works well.
+
+code:
+def score_item(
+    similarity: float,
+    recency: float,
+    reliability: float,
+    answer_likelihood: float
+) -> float:
+    return (
+        0.45 * similarity
+        + 0.20 * recency
+        + 0.20 * reliability
+        + 0.15 * answer_likelihood
+    )
+
+priority = score_item(
+    similarity=0.92,
+    recency=0.60,
+    reliability=0.95,
+    answer_likelihood=0.85
+)
+
+print(round(priority, 3))
+
+This lets the budgeter make better tradeoffs than raw retrieval rank alone.
+
+Reducing duplication before selection
+
+Many prompts waste tokens by including near-duplicate chunks.
+
+A fast fix is to remove highly similar passages before budgeting. Below is a lightweight Jaccard similarity approach using word sets.
+
+code:
+import re
+
+
+def normalize_text(text: str) -> List[str]:
+    return re.findall(r"\b\w+\b", text.lower())
+
+def jaccard_similarity(a: str, b: str) -> float:
+    set_a = set(normalize_text(a))
+    set_b = set(normalize_text(b))
+    if not set_a or not set_b:
+        return 0.0
+    return len(set_a & set_b) / len(set_a | set_b)
+
+def deduplicate_items(items: List[ContextItem], threshold: float = 0.7) -> List[ContextItem]:
+    deduped = []
+    for item in sorted(items, key=lambda x: x.priority, reverse=True):
+        is_duplicate = any(jaccard_similarity(item.text, kept.text) >= threshold for kept in deduped)
+        if not is_duplicate:
+            deduped.append(item)
+    return deduped
+
+deduped_items = deduplicate_items(items)
+
+This is not perfect, but it often removes repeated policy snippets, repeated search hits, and repeated memory fragments.
+
+Compressing old chat history
+
+Chat systems often degrade because every turn is appended forever.
+
+A better pattern is:
+• keep the last few turns in full
+• summarize older turns
+• refresh the summary periodically
+
+Here is a simple history compactor.
+
+code:
+def compact_chat_history(messages: List[Dict[str, str]], keep_last_n: int = 4) -> List[ContextItem]:
+    recent = messages[-keep_last_n:]
+    older = messages[:-keep_last_n]
+
+    items = []
+
+    for i, msg in enumerate(recent):
+        items.append(
+            ContextItem(
+                text=f"{msg['role']}: {msg['content']}",
+                source="chat_recent",
+                priority=0.8 - i * 0.05,
+                compressible=False
+            )
+        )
+
+    if older:
+        summary_text = "Summary of earlier conversation: " + " ".join(
+            msg["content"][:120] for msg in older
+        )
+        items.append(
+            ContextItem(
+                text=summary_text,
+                source="chat_summary",
+                priority=0.55,
+                compressible=True
+            )
+        )
+
+    return items
+
+messages = [
+    {"role": "user", "content": "I ordered a laptop last month."},
+    {"role": "assistant", "content": "I can help with order, return, and warranty questions."},
+    {"role": "user", "content": "The battery stopped charging this week."},
+    {"role": "assistant", "content": "That may fall under warranty depending on the product terms."},
+    {"role": "user", "content": "Can I still get a refund?"},
+]
+
+history_items = compact_chat_history(messages)
+
+This pattern is simple, cheap, and much more stable than endlessly replaying the full transcript.
+
+Assembling the final prompt payload
+
+Once selection is complete, the final prompt can be assembled in a structured way.
+
+code:
+def build_prompt(system_prompt: str, user_prompt: str, context_items: List[ContextItem]) -> str:
+    context_text = "\n\n".join(
+        f"[{item.source}] {item.text}" for item in context_items
+    )
+
+    return (
+        f"System instructions:\n{system_prompt}\n\n"
+        f"Context:\n{context_text}\n\n"
+        f"User request:\n{user_prompt}\n"
+    )
+
+final_prompt = build_prompt(system_prompt, user_prompt, selected)
+print(final_prompt)
+
+In production, you may send these as separate message roles rather than one string. The budgeting logic stays the same.
+
+A full example pipeline
+
+The next example combines the main steps:
+• deduplicate
+• score
+• budget
+• estimate cost
+• build final prompt
+
+code:
+def prepare_llm_request(
+    system_prompt: str,
+    user_prompt: str,
+    raw_items: List[ContextItem],
+    max_context_tokens: int = 4000,
+    reserved_output_tokens: int = 500,
+) -> Dict[str, Any]:
+    deduped = deduplicate_items(raw_items, threshold=0.75)
+
+    budgeter = TokenBudgeter(
+        max_context_tokens=max_context_tokens,
+        reserved_output_tokens=reserved_output_tokens,
+        reserved_system_tokens=estimate_tokens(system_prompt),
+        reserved_user_tokens=estimate_tokens(user_prompt),
+    )
+
+    selected = budgeter.select_context(deduped)
+    input_tokens = total_input_tokens(system_prompt, user_prompt, selected)
+
+    prompt = build_prompt(system_prompt, user_prompt, selected)
+
+    return {
+        "prompt": prompt,
+        "selected_items": selected,
+        "input_tokens": input_tokens,
+        "reserved_output_tokens": reserved_output_tokens,
+        "estimated_cost_usd": estimate_request_cost(
+            input_tokens=input_tokens,
+            output_tokens=reserved_output_tokens,
+            input_cost_per_million=3.0,
+            output_cost_per_million=15.0
+        )
+    }
+
+result = prepare_llm_request(system_prompt, user_prompt, items)
+
+print("Selected items:", len(result["selected_items"]))
+print("Input tokens:", result["input_tokens"])
+print("Estimated cost:", round(result["estimated_cost_usd"], 6))
+
+What this solves in practice
+
+A token budgeter creates discipline in systems that otherwise grow by accumulation.
+
+It helps with:
+• runaway prompt size in agent loops
+• expensive retrieval pipelines that stuff in too many chunks
+• unstable outputs caused by irrelevant context
+• long chat sessions that become slower over time
+• hidden cost spikes in internal AI tools
+
+It also makes experiments easier.
+
+Instead of asking, “Why did quality drop?”, you can inspect:
+• which items were selected
+• which were compressed
+• how much budget was spent on each category
+• what the estimated cost was before the request ran
+
+That turns prompt construction into an observable system rather than a guessing game.
+
+Practical extensions
+
+Once the basic layer is working, several upgrades are worth adding.
+
+• Category quotas
+  Reserve separate budgets for retrieval, chat history, and examples so one category cannot consume everything.
+
+• Query-aware compression
+  Compress chunks by keeping only sentences that overlap with the user question.
+
+• Learned scoring
+  Train a lightweight ranker on successful versus unsuccessful context selections.
+
+• Dynamic output reservation
+  Reserve more output tokens for summarization or code generation, fewer for classification.
+
+• Provider-specific tokenization
+  Swap the rough estimator for the exact tokenizer used by your model vendor.
+
+A simple category quota version might look like this:
+• 50% retrieval
+• 25% chat history
+• 15% examples
+• 10% scratch space for overflow
+
+That one change often improves consistency.
+
+Common mistakes
+
+Several patterns make token budgeting less effective than it should be.
+
+• Ranking only by retrieval similarity
+  Similarity alone can overvalue long, generic chunks.
+
+• Ignoring duplication
+  Repeated evidence wastes budget.
+
+• Under-reserving output tokens
+  The model gets cut off or becomes overly terse.
+
+• Keeping full chat history
+  Old turns should usually be summarized.
+
+• Treating all sources equally
+  A policy document and a random note should not have the same weight.
+
+The best systems are selective, not exhaustive.
+
+Final thought
+
+The most useful optimization in many LLM applications is not a new model, a new framework, or a larger context window.
+
+It is deciding what deserves to be seen.
+
+A token budgeter is a small piece of infrastructure, but it changes the economics and behavior of an AI system immediately. It reduces waste, improves relevance, and gives you a repeatable way to control prompt quality under real constraints.
+
+If you are building with language models
+[2026-04-24T00:17:37.719+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-04-24T00:17:37.737+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_single_dag, task_id=write_article.write_task, run_id=scheduled__2026-04-23T00:00:00+00:00, execution_date=20260423T000000, start_date=20260424T001639, end_date=20260424T001737
+[2026-04-24T00:17:37.780+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-04-24T00:17:37.789+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-04-24T00:17:37.790+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

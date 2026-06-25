@@ -1,0 +1,108 @@
+[2026-04-11T00:30:47.431+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-04-11T00:30:47.445+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.body_previous_articles.body_task_previous_articles scheduled__2026-04-10T00:00:00+00:00 [queued]>
+[2026-04-11T00:30:47.448+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.body_previous_articles.body_task_previous_articles scheduled__2026-04-10T00:00:00+00:00 [queued]>
+[2026-04-11T00:30:47.448+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-04-11T00:30:47.453+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): body_previous_articles.body_task_previous_articles> on 2026-04-10 00:00:00+00:00
+[2026-04-11T00:30:47.455+0000] {standard_task_runner.py:63} INFO - Started process 176 to run task
+[2026-04-11T00:30:47.457+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'body_previous_articles.body_task_previous_articles', 'scheduled__2026-04-10T00:00:00+00:00', '--job-id', '34', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmp67yiaija']
+[2026-04-11T00:30:47.459+0000] {standard_task_runner.py:91} INFO - Job 34: Subtask body_previous_articles.body_task_previous_articles
+[2026-04-11T00:30:47.488+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.body_previous_articles.body_task_previous_articles scheduled__2026-04-10T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-04-11T00:30:47.541+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='body_previous_articles.body_task_previous_articles' AIRFLOW_CTX_EXECUTION_DATE='2026-04-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-04-10T00:00:00+00:00'
+[2026-04-11T00:30:47.542+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-04-11T00:30:48.879+0000] {logging_mixin.py:188} INFO - {'id': '1960900386ed', 'title': 'Calibrated Uncertainty for Tabular Regression in Python', 'subtitle': 'Most regression systems return a single number.', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-04-10 07:53:20', 'last_modified_at': '2026-04-10 07:53:20', 'boosted_at': '', 'tags': ['artificial-intelligence', 'data-science', 'machine-learning'], 'topics': ['machine-learning', 'data-science'], 'claps': 0, 'voters': 0, 'reads': 0, 'views': 0, 'presentations': 7, 'word_count': 1798, 'responses_count': 0, 'reading_time': 6.784905660377358, 'url': 'https://medium.com/@MateDataAI/calibrated-uncertainty-for-tabular-regression-in-python-1960900386ed', 'unique_slug': 'calibrated-uncertainty-for-tabular-regression-in-python-1960900386ed', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:49.864+0000] {logging_mixin.py:188} INFO - {'id': '3b3edf3f6595', 'title': 'A Practical Semantic Cache in Python', 'subtitle': 'Every team building search, assistants, recommendation layers, or document workflows eventually runs into the same quiet problem: the…', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-04-04 05:58:35', 'last_modified_at': '2026-04-04 05:58:35', 'boosted_at': '', 'tags': ['machine-learning', 'artificial-intelligence', 'data-science'], 'topics': ['machine-learning', 'programming'], 'claps': 0, 'voters': 0, 'reads': 0, 'views': 1, 'presentations': 11, 'word_count': 2235, 'responses_count': 0, 'reading_time': 8.433962264150944, 'url': 'https://medium.com/@MateDataAI/a-practical-semantic-cache-in-python-3b3edf3f6595', 'unique_slug': 'a-practical-semantic-cache-in-python-3b3edf3f6595', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:50.973+0000] {logging_mixin.py:188} INFO - {'id': 'e235a6b15d53', 'title': 'The Missing Layer in AI Products: Decision Logging', 'subtitle': 'Most AI product failures do not come from bad models. They come from invisible decisions.', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-03-27 04:27:05', 'last_modified_at': '2026-03-27 04:27:05', 'boosted_at': '', 'tags': ['machine-learning', 'artificial-intelligence', 'data-science'], 'topics': ['artificial-intelligence', 'programming'], 'claps': 3, 'voters': 1, 'reads': 1, 'views': 3, 'presentations': 8, 'word_count': 1663, 'responses_count': 0, 'reading_time': 6.275471698113208, 'url': 'https://medium.com/@MateDataAI/the-missing-layer-in-ai-products-decision-logging-e235a6b15d53', 'unique_slug': 'the-missing-layer-in-ai-products-decision-logging-e235a6b15d53', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:51.847+0000] {logging_mixin.py:188} INFO - {'id': 'cd4bf0bf5217', 'title': 'The One-GPU Lab Is Here. And It Changes Everything About Who Gets to Do AI Research.', 'subtitle': '⸻', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-03-21 02:28:29', 'last_modified_at': '2026-03-21 02:28:29', 'boosted_at': '', 'tags': ['machine-learning', 'artificial-intelligence'], 'topics': ['artificial-intelligence'], 'claps': 0, 'voters': 0, 'reads': 3, 'views': 3, 'presentations': 13, 'word_count': 1798, 'responses_count': 0, 'reading_time': 6.784905660377358, 'url': 'https://medium.com/@MateDataAI/the-one-gpu-lab-is-here-and-it-changes-everything-about-who-gets-to-do-ai-research-cd4bf0bf5217', 'unique_slug': 'the-one-gpu-lab-is-here-and-it-changes-everything-about-who-gets-to-do-ai-research-cd4bf0bf5217', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:52.437+0000] {logging_mixin.py:188} INFO - {'id': 'd63cd9994811', 'title': 'The AI Landscape Just Shifted Beneath Our Feet. Here Is What Actually Matters Right Now.', 'subtitle': '✦ Models are shrinking. Runtimes are expanding. Agents are everywhere. And one GPU can now do what a cluster did last year. A field guide…', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-03-14 07:09:53', 'last_modified_at': '2026-03-14 07:09:53', 'boosted_at': '', 'tags': ['data-science', 'machine-learning', 'artificial-intelligence'], 'topics': ['artificial-intelligence'], 'claps': 0, 'voters': 0, 'reads': 2, 'views': 4, 'presentations': 14, 'word_count': 2308, 'responses_count': 0, 'reading_time': 8.709433962264152, 'url': 'https://medium.com/@MateDataAI/the-ai-landscape-just-shifted-beneath-our-feet-here-is-what-actually-matters-right-now-d63cd9994811', 'unique_slug': 'the-ai-landscape-just-shifted-beneath-our-feet-here-is-what-actually-matters-right-now-d63cd9994811', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:53.022+0000] {logging_mixin.py:188} INFO - {'id': 'f014b0306c27', 'title': 'F1 new track limit detection system — How they do it', 'subtitle': 'Introduced for the 2026 season, the FIA’s new ECAT (Every Car, All Turns) system continuously monitors track limits using AI and…', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-03-02 05:27:02', 'last_modified_at': '2026-03-02 05:27:02', 'boosted_at': '', 'tags': ['formula-1', 'object-detection', 'python'], 'topics': ['programming'], 'claps': 3, 'voters': 1, 'reads': 8, 'views': 14, 'presentations': 37, 'word_count': 923, 'responses_count': 0, 'reading_time': 3.483018867924528, 'url': 'https://medium.com/@MateDataAI/f1-new-track-limit-detection-system-how-they-do-it-f014b0306c27', 'unique_slug': 'f1-new-track-limit-detection-system-how-they-do-it-f014b0306c27', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:54.318+0000] {logging_mixin.py:188} INFO - {'id': '8587ed248cf4', 'title': 'Develop New Prodcuts with AI — A Variational Autoencoder for Categorical Product Characteristics', 'subtitle': 'Variational Autoencoders (VAEs) have become a powerful tool for generating synthetic data, learning compact representations, and enabling…', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-03-02 04:52:04', 'last_modified_at': '2026-03-04 22:56:29', 'boosted_at': '', 'tags': ['embedding', 'variational-autoencoder', 'new-product-development'], 'topics': ['machine-learning', 'data-science'], 'claps': 0, 'voters': 0, 'reads': 7, 'views': 12, 'presentations': 34, 'word_count': 755, 'responses_count': 0, 'reading_time': 2.849056603773585, 'url': 'https://medium.com/@MateDataAI/a-variational-autoencoder-for-categorical-product-characteristics-using-learned-embeddings-8587ed248cf4', 'unique_slug': 'a-variational-autoencoder-for-categorical-product-characteristics-using-learned-embeddings-8587ed248cf4', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:54.915+0000] {logging_mixin.py:188} INFO - {'id': '81d117fcb591', 'title': 'Text calssifiation, topic modelling and embedding calculation', 'subtitle': 'Project Overview', 'author': '2396262649cc', 'publication_id': '*Self-Published*', 'published_at': '2026-01-09 03:46:09', 'last_modified_at': '2026-01-09 03:46:09', 'boosted_at': '', 'tags': ['topic-clustering', 'openai', 'sentence-embedding', 'text-classification'], 'topics': ['machine-learning', 'data-science'], 'claps': 0, 'voters': 0, 'reads': 7, 'views': 9, 'presentations': 39, 'word_count': 606, 'responses_count': 0, 'reading_time': 2.2867924528301886, 'url': 'https://medium.com/@MateDataAI/text-calssifiation-topic-modelling-and-embedding-calculation-81d117fcb591', 'unique_slug': 'text-calssifiation-topic-modelling-and-embedding-calculation-81d117fcb591', 'image_url': '', 'lang': 'en', 'is_series': False, 'is_locked': False, 'is_shortform': False, 'top_highlight': ''}
+[2026-04-11T00:30:55.760+0000] {local_task_job_runner.py:124} ERROR - Received SIGTERM. Terminating subprocesses
+[2026-04-11T00:30:55.878+0000] {process_utils.py:132} INFO - Sending 15 to group 176. PIDs of all processes in the group: [176]
+[2026-04-11T00:30:55.892+0000] {process_utils.py:87} INFO - Sending the signal 15 to group 176
+[2026-04-11T00:30:55.901+0000] {taskinstance.py:2611} ERROR - Received SIGTERM. Terminating subprocesses.
+[2026-04-11T00:30:55.912+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-04-11T00:30:56.009+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/article wrtier.py", line 69, in get_article_text_previous
+    print(response.json())
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/log/logging_mixin.py", line 200, in write
+    self.flush()
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/log/logging_mixin.py", line 207, in flush
+    self._propagate_log(buf)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/log/logging_mixin.py", line 188, in _propagate_log
+    self.logger.log(self.level, remove_escape_codes(message))
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 1559, in log
+    self._log(level, msg, args, **kwargs)
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 1634, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 1644, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 1706, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 978, in handle
+    self.emit(record)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/log/file_task_handler.py", line 248, in emit
+    self.handler.emit(record)
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 1230, in emit
+    StreamHandler.emit(self, record)
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 1110, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 953, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/logging/__init__.py", line 689, in format
+    record.asctime = self.formatTime(record, self.datefmt)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/log/timezone_aware.py", line 42, in formatTime
+    dt = timezone.from_timestamp(record.created, tz="local")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/timezone.py", line 316, in from_timestamp
+    result = result.in_timezone(tz)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pendulum/datetime.py", line 357, in in_timezone
+    return tz.convert(dt)
+           ^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pendulum/tz/timezone.py", line 136, in convert
+    return cast(_DT, dt.astimezone(self))
+                     ^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pendulum/datetime.py", line 1278, in astimezone
+    dt = super().astimezone(tz)
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pendulum/datetime.py", line 1243, in __add__
+    caller = traceback.extract_stack(limit=2)[0].name
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/traceback.py", line 228, in extract_stack
+    stack = StackSummary.extract(walk_stack(f), limit=limit)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/traceback.py", line 390, in extract
+    return klass._extract_from_extended_frame_gen(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/traceback.py", line 429, in _extract_from_extended_frame_gen
+    linecache.checkcache(filename)
+  File "/usr/local/lib/python3.11/linecache.py", line 72, in checkcache
+    stat = os.stat(fullname)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 2613, in signal_handler
+    raise AirflowTaskTerminated("Task received SIGTERM signal")
+airflow.exceptions.AirflowTaskTerminated: Task received SIGTERM signal
+[2026-04-11T00:30:56.098+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=etl_single_dag, task_id=body_previous_articles.body_task_previous_articles, run_id=scheduled__2026-04-10T00:00:00+00:00, execution_date=20260410T000000, start_date=20260411T003047, end_date=20260411T003056
+[2026-04-11T00:30:56.212+0000] {process_utils.py:80} INFO - Process psutil.Process(pid=176, status='terminated', exitcode=2, started='00:30:47') (176) terminated with exit code 2
+[2026-04-11T00:30:56.221+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 143
+[2026-04-11T00:30:56.334+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check

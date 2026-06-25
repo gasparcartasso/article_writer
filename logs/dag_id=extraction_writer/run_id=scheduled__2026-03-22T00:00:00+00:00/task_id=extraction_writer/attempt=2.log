@@ -1,0 +1,41 @@
+[2026-03-31T03:42:13.447+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-31T03:42:13.456+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: extraction_writer.extraction_writer scheduled__2026-03-22T00:00:00+00:00 [queued]>
+[2026-03-31T03:42:13.458+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: extraction_writer.extraction_writer scheduled__2026-03-22T00:00:00+00:00 [queued]>
+[2026-03-31T03:42:13.458+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 2
+[2026-03-31T03:42:13.461+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extraction_writer> on 2026-03-22 00:00:00+00:00
+[2026-03-31T03:42:13.463+0000] {standard_task_runner.py:63} INFO - Started process 241 to run task
+[2026-03-31T03:42:13.464+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'extraction_writer', 'extraction_writer', 'scheduled__2026-03-22T00:00:00+00:00', '--job-id', '13', '--raw', '--subdir', 'DAGS_FOLDER/etl.py', '--cfg-path', '/tmp/tmpxucq5uoh']
+[2026-03-31T03:42:13.465+0000] {standard_task_runner.py:91} INFO - Job 13: Subtask extraction_writer
+[2026-03-31T03:42:13.481+0000] {task_command.py:426} INFO - Running <TaskInstance: extraction_writer.extraction_writer scheduled__2026-03-22T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-03-31T03:42:13.507+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='extraction_writer' AIRFLOW_CTX_TASK_ID='extraction_writer' AIRFLOW_CTX_EXECUTION_DATE='2026-03-22T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-03-22T00:00:00+00:00'
+[2026-03-31T03:42:13.508+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-31T03:42:13.970+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-31T03:42:13.971+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/etl.py", line 90, in send_email_write_article_from_medium
+    body=get_article(get_article_text(get_top_feeds()),get_article_text(get_my_previous_articles())).to_dict()['content'])
+                                      ^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/etl.py", line 21, in get_top_feeds
+    return response.json()['topfeeds'][:10]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'topfeeds'
+[2026-03-31T03:42:13.982+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=extraction_writer, task_id=extraction_writer, run_id=scheduled__2026-03-22T00:00:00+00:00, execution_date=20260322T000000, start_date=20260331T034213, end_date=20260331T034213
+[2026-03-31T03:42:13.990+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 13 for task extraction_writer ('topfeeds'; 241)
+[2026-03-31T03:42:14.008+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2026-03-31T03:42:14.020+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-03-31T03:42:14.021+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

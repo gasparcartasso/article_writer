@@ -1,0 +1,320 @@
+[2026-05-04T11:32:58.510+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-05-04T11:32:58.532+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-05-03T00:00:00+00:00 [queued]>
+[2026-05-04T11:32:58.536+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-05-03T00:00:00+00:00 [queued]>
+[2026-05-04T11:32:58.536+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-05-04T11:32:58.540+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): write_article.write_task> on 2026-05-03 00:00:00+00:00
+[2026-05-04T11:32:58.543+0000] {standard_task_runner.py:63} INFO - Started process 189 to run task
+[2026-05-04T11:32:58.545+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'write_article.write_task', 'scheduled__2026-05-03T00:00:00+00:00', '--job-id', '60', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmpqdaglxbr']
+[2026-05-04T11:32:58.547+0000] {standard_task_runner.py:91} INFO - Job 60: Subtask write_article.write_task
+[2026-05-04T11:32:58.566+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.write_article.write_task scheduled__2026-05-03T00:00:00+00:00 [running]> on host c94487c71b04
+[2026-05-04T11:32:58.603+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='write_article.write_task' AIRFLOW_CTX_EXECUTION_DATE='2026-05-03T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-05-03T00:00:00+00:00'
+[2026-05-04T11:32:58.603+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-05-04T11:33:53.755+0000] {python.py:237} INFO - Done. Returned value was: Build a Local Semantic Search Tool for Your Notes with Python
+
+A folder full of notes is useful right up until it stops being searchable in any meaningful way.
+
+File names help a little. Full-text search helps a little more. But neither can answer a question like:
+
+• Which notes mention evaluation methods for retrieval systems?
+• What did I write about OCR pipelines that also touched document structure?
+• Which project ideas are similar to this draft I started last week?
+
+A practical fix is to build semantic search over your own files.
+
+This article shows how to create a small local search tool in Python that turns a folder of text documents into a searchable vector index. You will be able to ask for the most relevant notes by meaning, not just by exact keyword match.
+
+The approach is simple:
+
+• read files from a folder
+• split them into chunks
+• convert chunks into embeddings
+• store them in a local index
+• run similarity search for any query
+
+It is fast to build, cheap to run, and useful for research notes, project docs, article drafts, meeting summaries, and internal knowledge bases.
+
+⸻
+
+Why semantic search is worth building
+
+Traditional search matches words.
+
+Semantic search matches intent and meaning.
+
+That difference matters when your notes use different wording for the same idea. A note about “document parsing” should still be found when you search for “extract structured data from PDFs.” A draft about “model confidence” should still appear when you ask for “uncertainty estimation.”
+
+This is one of the most useful small AI systems you can build because it solves a real workflow problem without requiring a giant application.
+
+You also keep control of your data if everything runs locally.
+
+⸻
+
+What we are building
+
+The tool will:
+
+• scan a folder for .txt and .md files
+• split each file into overlapping chunks
+• create embeddings with a sentence-transformers model
+• store vectors in a FAISS index
+• return the top matching chunks for a query
+
+This is enough to create a working local knowledge search system.
+
+Later, you can extend it with:
+
+• PDF support
+• metadata filters
+• a desktop UI
+• re-ranking
+• question answering on top of retrieved chunks
+
+⸻
+
+Project structure
+
+A minimal project can look like this:
+
+semantic_notes/
+search_notes.py
+notes/
+idea_1.md
+meeting_notes.txt
+draft_article.md
+
+Install the dependencies:
+
+pip install sentence-transformers faiss-cpu numpy
+
+If you want to keep things lightweight, this setup is a good balance between simplicity and quality.
+
+⸻
+
+Step 1 → Load files from a folder
+
+Start by collecting note files.
+
+import os
+
+def load_documents(folder_path):
+    documents = []
+    for root, _, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".txt") or file.endswith(".md"):
+                path = os.path.join(root, file)
+                with open(path, "r", encoding="utf-8") as f:
+                    text = f.read().strip()
+                    if text:
+                        documents.append({
+                            "path": path,
+                            "text": text
+                        })
+    return documents
+
+This function walks through the folder and loads plain text and Markdown files into memory.
+
+⸻
+
+Step 2 → Split documents into chunks
+
+Embedding entire documents can work for short notes, but chunking usually gives better retrieval. It helps the system return the exact section that matches the query.
+
+def chunk_text(text, chunk_size=500, overlap=100):
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = start + chunk_size
+        chunk = text[start:end]
+        chunks.append(chunk)
+        start += chunk_size - overlap
+    return chunks
+
+def create_chunks(documents, chunk_size=500, overlap=100):
+    all_chunks = []
+    for doc in documents:
+        chunks = chunk_text(doc["text"], chunk_size, overlap)
+        for i, chunk in enumerate(chunks):
+            all_chunks.append({
+                "path": doc["path"],
+                "chunk_id": i,
+                "text": chunk
+            })
+    return all_chunks
+
+This version uses character-based chunking because it is easy to understand and works well enough for many note collections.
+
+For production use, sentence-aware chunking is often better, but this is a strong starting point.
+
+⸻
+
+Step 3 → Create embeddings
+
+Now convert each chunk into a vector representation.
+
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+def embed_chunks(chunks):
+    texts = [chunk["text"] for chunk in chunks]
+    embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
+    return embeddings
+
+The model all-MiniLM-L6-v2 is a popular default:
+
+• small
+• fast
+• good enough for many semantic search tasks
+
+If your note collection is specialized, you can later test stronger embedding models.
+
+⸻
+
+Step 4 → Build a FAISS index
+
+FAISS is a fast similarity search library that works well for local vector search.
+
+import faiss
+
+def build_faiss_index(embeddings):
+    dimension = embeddings.shape[1]
+    index = faiss.IndexFlatL2(dimension)
+    index.add(embeddings.astype(np.float32))
+    return index
+
+This uses L2 distance. For many embedding models, cosine similarity is also common. A simple way to approximate cosine similarity in FAISS is to normalize vectors before indexing.
+
+Here is the improved version:
+
+def normalize_embeddings(embeddings):
+    norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+    return embeddings / norms
+
+def build_faiss_index_cosine(embeddings):
+    normalized = normalize_embeddings(embeddings).astype(np.float32)
+    dimension = normalized.shape[1]
+    index = faiss.IndexFlatIP(dimension)
+    index.add(normalized)
+    return index, normalized
+
+Inner product on normalized vectors gives cosine-style similarity.
+
+⸻
+
+Step 5 → Search the notes
+
+Now create a function that embeds a query and retrieves the closest chunks.
+
+def search(query, model, index, chunks, top_k=5):
+    query_embedding = model.encode([query], convert_to_numpy=True)
+    query_embedding = normalize_embeddings(query_embedding).astype(np.float32)
+
+    scores, indices = index.search(query_embedding, top_k)
+
+    results = []
+    for score, idx in zip(scores[0], indices[0]):
+        results.append({
+            "score": float(score),
+            "path": chunks[idx]["path"],
+            "chunk_id": chunks[idx]["chunk_id"],
+            "text": chunks[idx]["text"]
+        })
+    return results
+
+This returns the top matching chunks along with their source file paths.
+
+⸻
+
+Step 6 → Put everything together
+
+Here is a complete script you can run.
+
+import os
+import numpy as np
+import faiss
+from sentence_transformers import SentenceTransformer
+
+def load_documents(folder_path):
+    documents = []
+    for root, _, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".txt") or file.endswith(".md"):
+                path = os.path.join(root, file)
+                with open(path, "r", encoding="utf-8") as f:
+                    text = f.read().strip()
+                    if text:
+                        documents.append({
+                            "path": path,
+                            "text": text
+                        })
+    return documents
+
+def chunk_text(text, chunk_size=500, overlap=100):
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = start + chunk_size
+        chunks.append(text[start:end])
+        start += chunk_size - overlap
+    return chunks
+
+def create_chunks(documents, chunk_size=500, overlap=100):
+    all_chunks = []
+    for doc in documents:
+        chunks = chunk_text(doc["text"], chunk_size, overlap)
+        for i, chunk in enumerate(chunks):
+            all_chunks.append({
+                "path": doc["path"],
+                "chunk_id": i,
+                "text": chunk
+            })
+    return all_chunks
+
+def normalize_embeddings(embeddings):
+    norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+    return embeddings / norms
+
+def build_index(chunks, model):
+    texts = [chunk["text"] for chunk in chunks]
+    embeddings = model.encode(texts, convert_to_numpy=True, show_progress_bar=True)
+    embeddings = normalize_embeddings(embeddings).astype(np.float32)
+
+    dimension = embeddings.shape[1]
+    index = faiss.IndexFlatIP(dimension)
+    index.add(embeddings)
+    return index
+
+def search(query, model, index, chunks, top_k=5):
+    query_embedding = model.encode([query], convert_to_numpy=True)
+    query_embedding = normalize_embeddings(query_embedding).astype(np.float32)
+
+    scores, indices = index.search(query_embedding, top_k)
+
+    results = []
+    for score, idx in zip(scores[0], indices[0]):
+        results.append({
+            "score": float(score),
+            "path": chunks[idx]["path"],
+            "chunk_id": chunks[idx]["chunk_id"],
+            "text": chunks[idx]["text"]
+        })
+    return results
+
+if __name__ == "__main__":
+    folder = "notes"
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    documents = load_documents(folder)
+    chunks = create_chunks(documents, chunk_size=500, overlap=100)
+    index = build_index(chunks, model)
+
+    query = input("Enter your search query: ")
+    results = search(query
+[2026-05-04T11:33:53.757+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-05-04T11:33:53.810+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_single_dag, task_id=write_article.write_task, run_id=scheduled__2026-05-03T00:00:00+00:00, execution_date=20260503T000000, start_date=20260504T113258, end_date=20260504T113353
+[2026-05-04T11:33:53.871+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-05-04T11:33:53.902+0000] {local_task_job_runner.py:124} ERROR - Received SIGTERM. Terminating subprocesses
+[2026-05-04T11:33:53.903+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 143
+[2026-05-04T11:33:53.933+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-05-04T11:33:53.940+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

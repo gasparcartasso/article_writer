@@ -1,0 +1,288 @@
+[2026-04-07T03:32:08.929+0000] {processor.py:161} INFO - Started process (PID=165) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:32:08.930+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:32:08.934+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:32:08.934+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:32:09.720+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:32:09.715+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/etl copy.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/airflow/dags/etl copy.py", line 119, in <module>
+    with TaskGroup("extract TOP 10") as extract_top_group:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/task_group.py", line 116, in __init__
+    validate_group_key(group_id)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/helpers.py", line 70, in validate_group_key
+    raise AirflowException(
+airflow.exceptions.AirflowException: The key 'extract TOP 10' has to be made of alphanumeric characters, dashes and underscores exclusively
+[2026-04-07T03:32:09.720+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:32:09.735+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.813 seconds
+[2026-04-07T03:32:40.037+0000] {processor.py:161} INFO - Started process (PID=179) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:32:40.038+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:32:40.039+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:32:40.039+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:32:40.240+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:32:40.239+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/etl copy.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/airflow/dags/etl copy.py", line 119, in <module>
+    with TaskGroup("extract TOP 10") as extract_top_group:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/task_group.py", line 116, in __init__
+    validate_group_key(group_id)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/helpers.py", line 70, in validate_group_key
+    raise AirflowException(
+airflow.exceptions.AirflowException: The key 'extract TOP 10' has to be made of alphanumeric characters, dashes and underscores exclusively
+[2026-04-07T03:32:40.240+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:32:40.246+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.213 seconds
+[2026-04-07T03:33:10.557+0000] {processor.py:161} INFO - Started process (PID=189) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:33:10.558+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:33:10.559+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:33:10.559+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:33:10.768+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:33:10.768+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/etl copy.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/airflow/dags/etl copy.py", line 119, in <module>
+    with TaskGroup("extract TOP 10") as extract_top_group:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/task_group.py", line 116, in __init__
+    validate_group_key(group_id)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/helpers.py", line 70, in validate_group_key
+    raise AirflowException(
+airflow.exceptions.AirflowException: The key 'extract TOP 10' has to be made of alphanumeric characters, dashes and underscores exclusively
+[2026-04-07T03:33:10.769+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:33:10.775+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.223 seconds
+[2026-04-07T03:33:41.093+0000] {processor.py:161} INFO - Started process (PID=199) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:33:41.093+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:33:41.095+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:33:41.095+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:33:41.302+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:33:41.301+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/etl copy.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/airflow/dags/etl copy.py", line 119, in <module>
+    with TaskGroup("extract TOP 10") as extract_top_group:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/task_group.py", line 116, in __init__
+    validate_group_key(group_id)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/helpers.py", line 70, in validate_group_key
+    raise AirflowException(
+airflow.exceptions.AirflowException: The key 'extract TOP 10' has to be made of alphanumeric characters, dashes and underscores exclusively
+[2026-04-07T03:33:41.302+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:33:41.311+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.225 seconds
+[2026-04-07T03:34:11.624+0000] {processor.py:161} INFO - Started process (PID=209) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:11.626+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:34:11.628+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:11.627+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:11.847+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:11.846+0000] {dagbag.py:355} ERROR - Failed to import: /opt/airflow/dags/etl copy.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/dagbag.py", line 351, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/opt/airflow/dags/etl copy.py", line 119, in <module>
+    with TaskGroup("extract TOP 10") as extract_top_group:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/task_group.py", line 116, in __init__
+    validate_group_key(group_id)
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/utils/helpers.py", line 70, in validate_group_key
+    raise AirflowException(
+airflow.exceptions.AirflowException: The key 'extract TOP 10' has to be made of alphanumeric characters, dashes and underscores exclusively
+[2026-04-07T03:34:11.847+0000] {processor.py:842} WARNING - No viable dags retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:11.857+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.239 seconds
+[2026-04-07T03:34:18.939+0000] {processor.py:161} INFO - Started process (PID=219) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:18.940+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:34:18.942+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:18.942+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:19.137+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:19.172+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:19.172+0000] {override.py:1829} INFO - Created Permission View: can delete on DAG:etl_single_dag
+[2026-04-07T03:34:19.174+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:19.174+0000] {override.py:1829} INFO - Created Permission View: can read on DAG:etl_single_dag
+[2026-04-07T03:34:19.176+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:19.176+0000] {override.py:1829} INFO - Created Permission View: can edit on DAG:etl_single_dag
+[2026-04-07T03:34:19.176+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:19.176+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:34:19.178+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:19.178+0000] {dag.py:3118} INFO - Creating ORM DAG for etl_single_dag
+[2026-04-07T03:34:19.181+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:19.181+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-06 00:00:00+00:00, run_after=2026-04-07 00:00:00+00:00
+[2026-04-07T03:34:19.185+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.251 seconds
+[2026-04-07T03:34:49.431+0000] {processor.py:161} INFO - Started process (PID=233) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:49.432+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:34:49.434+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:49.433+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:49.622+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:34:49.631+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:49.630+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:34:49.636+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:34:49.636+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:34:49.641+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.216 seconds
+[2026-04-07T03:35:19.910+0000] {processor.py:161} INFO - Started process (PID=243) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:35:19.911+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:35:19.913+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:35:19.913+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:35:20.121+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:35:20.128+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:35:20.128+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:35:20.134+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:35:20.134+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:35:20.139+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.234 seconds
+[2026-04-07T03:35:50.412+0000] {processor.py:161} INFO - Started process (PID=253) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:35:50.413+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:35:50.415+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:35:50.415+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:35:50.606+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:35:50.614+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:35:50.614+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:35:50.621+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:35:50.620+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:35:50.625+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.219 seconds
+[2026-04-07T03:36:20.724+0000] {processor.py:161} INFO - Started process (PID=263) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:36:20.725+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:36:20.726+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:36:20.726+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:36:20.874+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:36:20.883+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:36:20.883+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:36:20.889+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:36:20.889+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:36:20.894+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.176 seconds
+[2026-04-07T03:36:51.124+0000] {processor.py:161} INFO - Started process (PID=273) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:36:51.125+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:36:51.127+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:36:51.126+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:36:51.273+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:36:51.283+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:36:51.283+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:36:51.289+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:36:51.289+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:36:51.294+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.175 seconds
+[2026-04-07T03:37:21.575+0000] {processor.py:161} INFO - Started process (PID=283) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:37:21.575+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:37:21.577+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:37:21.576+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:37:21.721+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:37:21.730+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:37:21.730+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:37:21.736+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:37:21.736+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:37:21.741+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.171 seconds
+[2026-04-07T03:37:51.997+0000] {processor.py:161} INFO - Started process (PID=293) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:37:51.998+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:37:52.000+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:37:51.999+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:37:52.143+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:37:52.152+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:37:52.152+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:37:52.158+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:37:52.158+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:37:52.163+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.173 seconds
+[2026-04-07T03:38:22.403+0000] {processor.py:161} INFO - Started process (PID=303) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:38:22.404+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:38:22.406+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:38:22.405+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:38:22.549+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:38:22.558+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:38:22.558+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:38:22.565+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:38:22.564+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:38:22.569+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.172 seconds
+[2026-04-07T03:38:52.837+0000] {processor.py:161} INFO - Started process (PID=313) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:38:52.837+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:38:52.839+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:38:52.838+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:38:52.981+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:38:52.990+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:38:52.990+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:38:52.996+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:38:52.996+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:38:53.002+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.171 seconds
+[2026-04-07T03:39:23.245+0000] {processor.py:161} INFO - Started process (PID=323) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:39:23.246+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:39:23.247+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:39:23.246+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:39:23.385+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:39:23.395+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:39:23.395+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:39:23.401+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:39:23.401+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:39:23.406+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.164 seconds
+[2026-04-07T03:39:53.663+0000] {processor.py:161} INFO - Started process (PID=333) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:39:53.664+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:39:53.665+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:39:53.665+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:39:53.808+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:39:53.819+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:39:53.819+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:39:53.825+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:39:53.825+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:39:53.831+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.171 seconds
+[2026-04-07T03:40:24.073+0000] {processor.py:161} INFO - Started process (PID=343) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:40:24.074+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:40:24.075+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:40:24.074+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:40:24.218+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:40:24.227+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:40:24.227+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:40:24.234+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:40:24.234+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:40:24.239+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.170 seconds
+[2026-04-07T03:40:54.470+0000] {processor.py:161} INFO - Started process (PID=353) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:40:54.471+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:40:54.472+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:40:54.472+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:40:54.618+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:40:54.627+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:40:54.627+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:40:54.633+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:40:54.633+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:40:54.638+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.174 seconds
+[2026-04-07T03:41:24.903+0000] {processor.py:161} INFO - Started process (PID=363) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:41:24.904+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:41:24.905+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:41:24.905+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:41:25.050+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:41:25.058+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:41:25.058+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:41:25.065+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:41:25.064+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:41:25.070+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.173 seconds
+[2026-04-07T03:41:55.331+0000] {processor.py:161} INFO - Started process (PID=373) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:41:55.332+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:41:55.333+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:41:55.333+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:41:55.475+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:41:55.484+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:41:55.484+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:41:55.490+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:41:55.490+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:41:55.495+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.169 seconds
+[2026-04-07T03:42:25.715+0000] {processor.py:161} INFO - Started process (PID=383) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:42:25.716+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:42:25.717+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:42:25.717+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:42:25.879+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:42:25.888+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:42:25.887+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:42:25.894+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:42:25.894+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:42:25.900+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.193 seconds
+[2026-04-07T03:42:56.150+0000] {processor.py:161} INFO - Started process (PID=393) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:42:56.150+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:42:56.151+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:42:56.151+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:42:56.293+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:42:56.302+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:42:56.302+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:42:56.309+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:42:56.309+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:42:56.314+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.166 seconds
+[2026-04-07T03:43:04.359+0000] {processor.py:161} INFO - Started process (PID=398) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:43:04.360+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:43:04.361+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:43:04.361+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:43:04.511+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:43:04.520+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:43:04.520+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:43:04.526+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:43:04.526+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:43:04.532+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.180 seconds
+[2026-04-07T03:43:34.820+0000] {processor.py:161} INFO - Started process (PID=408) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:43:34.821+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:43:34.822+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:43:34.822+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:43:34.967+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:43:34.976+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:43:34.976+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:43:34.982+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:43:34.982+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:43:34.986+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.172 seconds
+[2026-04-07T03:44:01.242+0000] {processor.py:161} INFO - Started process (PID=418) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:44:01.243+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:44:01.244+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:44:01.244+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:44:01.391+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:44:01.400+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:44:01.400+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:44:01.406+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:44:01.406+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:44:01.412+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.175 seconds
+[2026-04-07T03:44:31.671+0000] {processor.py:161} INFO - Started process (PID=432) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:44:31.672+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:44:31.674+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:44:31.673+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:44:31.817+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:44:31.826+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:44:31.826+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:44:31.834+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:44:31.833+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:44:31.838+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.172 seconds
+[2026-04-07T03:45:02.062+0000] {processor.py:161} INFO - Started process (PID=449) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:45:02.063+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:45:02.064+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:45:02.064+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:45:02.209+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:45:02.218+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:45:02.218+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:45:02.224+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:45:02.224+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:45:02.229+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.173 seconds
+[2026-04-07T03:45:32.503+0000] {processor.py:161} INFO - Started process (PID=459) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:45:32.504+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:45:32.506+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:45:32.506+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:45:32.652+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:45:32.661+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:45:32.661+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:45:32.668+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:45:32.668+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:45:32.673+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.175 seconds
+[2026-04-07T03:46:02.956+0000] {processor.py:161} INFO - Started process (PID=471) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:46:02.957+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:46:02.958+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:46:02.958+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:46:03.099+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:46:03.108+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:46:03.108+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:46:03.114+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:46:03.114+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:46:03.120+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.168 seconds
+[2026-04-07T03:46:33.381+0000] {processor.py:161} INFO - Started process (PID=481) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:46:33.382+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:46:33.382+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:46:33.382+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:46:33.513+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:46:33.522+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:46:33.522+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:46:33.529+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:46:33.529+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:46:33.534+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.155 seconds
+[2026-04-07T03:47:03.781+0000] {processor.py:161} INFO - Started process (PID=491) to work on /opt/airflow/dags/etl copy.py
+[2026-04-07T03:47:03.782+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/etl copy.py for tasks to queue
+[2026-04-07T03:47:03.783+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:47:03.782+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:47:03.937+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/etl copy.py
+[2026-04-07T03:47:03.947+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:47:03.947+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-04-07T03:47:03.953+0000] {logging_mixin.py:188} INFO - [2026-04-07T03:47:03.953+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-04-07 00:00:00+00:00, run_after=2026-04-08 00:00:00+00:00
+[2026-04-07T03:47:03.959+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/etl copy.py took 0.181 seconds
