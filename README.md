@@ -2,8 +2,8 @@
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/gasparcartasso/cripto_currencies
-   cd cripto_currencies
+   git clone https://github.com/gasparcartasso/article_writer
+   cd article_writer
    ```
 2. **Construir los servicios con Docker Compose**
     ```bash
