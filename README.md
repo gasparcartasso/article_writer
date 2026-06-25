@@ -12,4 +12,4 @@
 3. **Acceder a la aplicación**
     http://localhost:8080
 4. **Password y User**
-    'airflow'
+    'admin'

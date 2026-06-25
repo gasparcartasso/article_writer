@@ -1,0 +1,58 @@
+[2026-06-25T03:50:21.222+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-25T03:50:21.231+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.send_email.send_email_task manual__2026-06-25T03:49:33.482881+00:00 [queued]>
+[2026-06-25T03:50:21.233+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.send_email.send_email_task manual__2026-06-25T03:49:33.482881+00:00 [queued]>
+[2026-06-25T03:50:21.233+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-06-25T03:50:21.237+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): send_email.send_email_task> on 2026-06-25 03:49:33.482881+00:00
+[2026-06-25T03:50:21.238+0000] {standard_task_runner.py:63} INFO - Started process 288 to run task
+[2026-06-25T03:50:21.239+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'send_email.send_email_task', 'manual__2026-06-25T03:49:33.482881+00:00', '--job-id', '85', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmp3mg0n1wy']
+[2026-06-25T03:50:21.240+0000] {standard_task_runner.py:91} INFO - Job 85: Subtask send_email.send_email_task
+[2026-06-25T03:50:21.256+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.send_email.send_email_task manual__2026-06-25T03:49:33.482881+00:00 [running]> on host 48830b79406c
+[2026-06-25T03:50:21.281+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='send_email.send_email_task' AIRFLOW_CTX_EXECUTION_DATE='2026-06-25T03:49:33.482881+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-25T03:49:33.482881+00:00'
+[2026-06-25T03:50:21.281+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-25T03:50:25.295+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-25T03:50:25.296+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 235, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 252, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/article wrtier.py", line 110, in send_email
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 1050, in __init__
+    SMTP.__init__(self, host, port, local_hostname, timeout,
+  File "/usr/local/lib/python3.11/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 1056, in _get_socket
+    new_socket = super()._get_socket(host, port, timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/socket.py", line 827, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno -5] No address associated with hostname
+[2026-06-25T03:50:25.313+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=etl_single_dag, task_id=send_email.send_email_task, run_id=manual__2026-06-25T03:49:33.482881+00:00, execution_date=20260625T034933, start_date=20260625T035021, end_date=20260625T035025
+[2026-06-25T03:50:25.323+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 85 for task send_email.send_email_task ([Errno -5] No address associated with hostname; 288)
+[2026-06-25T03:50:25.333+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 1
+[2026-06-25T03:50:25.347+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-06-25T03:50:25.348+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

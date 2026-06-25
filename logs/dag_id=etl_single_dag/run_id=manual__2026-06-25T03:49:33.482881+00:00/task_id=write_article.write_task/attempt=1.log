@@ -1,0 +1,312 @@
+[2026-06-25T03:49:48.855+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-25T03:49:48.863+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task manual__2026-06-25T03:49:33.482881+00:00 [queued]>
+[2026-06-25T03:49:48.865+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_single_dag.write_article.write_task manual__2026-06-25T03:49:33.482881+00:00 [queued]>
+[2026-06-25T03:49:48.866+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2026-06-25T03:49:48.869+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): write_article.write_task> on 2026-06-25 03:49:33.482881+00:00
+[2026-06-25T03:49:48.870+0000] {standard_task_runner.py:63} INFO - Started process 280 to run task
+[2026-06-25T03:49:48.871+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'etl_single_dag', 'write_article.write_task', 'manual__2026-06-25T03:49:33.482881+00:00', '--job-id', '84', '--raw', '--subdir', 'DAGS_FOLDER/article wrtier.py', '--cfg-path', '/tmp/tmp0e6jgzkr']
+[2026-06-25T03:49:48.872+0000] {standard_task_runner.py:91} INFO - Job 84: Subtask write_article.write_task
+[2026-06-25T03:49:48.889+0000] {task_command.py:426} INFO - Running <TaskInstance: etl_single_dag.write_article.write_task manual__2026-06-25T03:49:33.482881+00:00 [running]> on host 48830b79406c
+[2026-06-25T03:49:48.916+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_single_dag' AIRFLOW_CTX_TASK_ID='write_article.write_task' AIRFLOW_CTX_EXECUTION_DATE='2026-06-25T03:49:33.482881+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-25T03:49:33.482881+00:00'
+[2026-06-25T03:49:48.916+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-25T03:49:53.158+0000] {_base_client.py:1129} INFO - Retrying request to /chat/completions in 0.472487 seconds
+[2026-06-25T03:49:57.642+0000] {_base_client.py:1129} INFO - Retrying request to /chat/completions in 0.825045 seconds
+[2026-06-25T03:50:20.186+0000] {python.py:237} INFO - Done. Returned value was: A Lightweight Python Guardrail for RAG That Refuses to Guess
+
+Retrieval systems fail in a predictable way.
+
+They find something vaguely related, pass it to a language model, and return an answer that sounds precise even when the evidence is weak. The interface looks polished. The citations may even look convincing. But the system is still guessing.
+
+As more teams build internal assistants, document search tools, and domain-specific copilots, this failure mode becomes expensive. It wastes analyst time, creates false confidence, and turns “helpful AI” into a support burden.
+
+A practical fix is not a bigger model.
+
+It is an answerability gate.
+
+The idea is simple: before generating an answer, score whether the retrieved evidence is strong enough to support one. If the evidence is weak, the system abstains and asks for a better query, more context, or a human review.
+
+This article builds that gate in Python.
+
+The focus is one topic only: a lightweight answerability layer for retrieval-augmented generation using semantic similarity, retrieval agreement, and calibrated thresholds.
+
+Why this matters now
+
+A lot of current work in AI systems is moving in the same direction:
+
+• smaller, cheaper models  
+• local or private deployments  
+• agent workflows that call tools repeatedly  
+• retrieval pipelines over large document collections  
+• pressure to reduce hallucinations without adding too much latency
+
+In that environment, a guardrail that decides “answer” versus “don’t answer” is more useful than another prompt trick.
+
+It is also much easier to test.
+
+The core pattern
+
+A retrieval pipeline usually looks like this:
+
+• embed the user query  
+• retrieve top-k chunks  
+• pass chunks to an LLM  
+• generate an answer
+
+The missing step is:
+
+• estimate whether the retrieved chunks actually support a grounded answer
+
+We will build a scoring function based on three signals:
+
+• top similarity score → how close the best chunk is to the query  
+• margin score → how much better the best chunk is than the rest  
+• agreement score → whether multiple retrieved chunks point to the same answer region
+
+Then we will calibrate a threshold on a small labeled dataset.
+
+If the score is below threshold, the system abstains.
+
+What we are building
+
+The final system will:
+
+• index a set of text chunks  
+• retrieve candidates for a query  
+• compute answerability features  
+• train a simple classifier for “answerable” vs “not answerable”  
+• return either supporting context or an abstention
+
+This is intentionally lightweight.
+
+No vector database is required for the demo. No external LLM is required either. The answerability layer should work before generation happens.
+
+Dependencies
+
+Install:
+
+```python
+pip install sentence-transformers scikit-learn numpy pandas
+```
+
+A small document collection
+
+We will use a tiny corpus so the logic is easy to inspect. In a real system, these would be chunks from manuals, policies, product docs, contracts, or research notes.
+
+```python
+documents = [
+    {
+        "doc_id": "policy_1",
+        "text": "Employees can work remotely up to three days per week with manager approval."
+    },
+    {
+        "doc_id": "policy_2",
+        "text": "Travel expenses above 500 dollars require director approval before booking."
+    },
+    {
+        "doc_id": "policy_3",
+        "text": "New hires are eligible for health insurance starting on the first day of employment."
+    },
+    {
+        "doc_id": "policy_4",
+        "text": "Unused vacation days can be carried over up to five days into the next calendar year."
+    },
+    {
+        "doc_id": "policy_5",
+        "text": "Laptop replacements are available every four years unless a hardware failure is confirmed."
+    },
+    {
+        "doc_id": "policy_6",
+        "text": "International travel requires completion of the security briefing and regional compliance checklist."
+    }
+]
+```
+
+Building a simple semantic retriever
+
+We will embed each chunk and rank by cosine similarity.
+
+```python
+import numpy as np
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+doc_texts = [d["text"] for d in documents]
+doc_ids = [d["doc_id"] for d in documents]
+doc_embeddings = model.encode(doc_texts, normalize_embeddings=True)
+
+def retrieve(query, top_k=3):
+    query_emb = model.encode([query], normalize_embeddings=True)[0]
+    scores = doc_embeddings @ query_emb
+    top_idx = np.argsort(scores)[::-1][:top_k]
+    
+    results = []
+    for idx in top_idx:
+        results.append({
+            "doc_id": doc_ids[idx],
+            "text": doc_texts[idx],
+            "score": float(scores[idx])
+        })
+    return results
+```
+
+A quick retrieval test:
+
+```python
+query = "How many remote days are allowed each week?"
+results = retrieve(query, top_k=3)
+
+for r in results:
+    print(r["doc_id"], round(r["score"], 3), "-", r["text"])
+```
+
+You should see the remote work policy near the top.
+
+Why retrieval score alone is not enough
+
+The top similarity score helps, but it is not reliable by itself.
+
+A vague query can still match a chunk moderately well. A broad query can retrieve several different policy areas. A misleading query can retrieve text with overlapping vocabulary but no answer.
+
+That is why we need multiple features.
+
+Feature engineering for answerability
+
+We will compute a compact set of features from the retrieved results.
+
+1. Top score
+The highest similarity score.
+
+2. Mean top-k score
+The average similarity across the top retrieved chunks.
+
+3. Score margin
+The gap between the first and second result. A large gap often means the best match is clearly dominant.
+
+4. Agreement ratio
+The share of top-k chunks that are close to the best score. If several chunks strongly support the same topic, answerability is usually higher.
+
+5. Query length
+Very short queries are often underspecified.
+
+```python
+def extract_features(query, retrieved, agreement_delta=0.05):
+    scores = [r["score"] for r in retrieved]
+    top_score = scores[0] if scores else 0.0
+    mean_score = float(np.mean(scores)) if scores else 0.0
+    margin = (scores[0] - scores[1]) if len(scores) > 1 else top_score
+    
+    agreement_count = sum(s >= top_score - agreement_delta for s in scores)
+    agreement_ratio = agreement_count / len(scores) if scores else 0.0
+    
+    query_len = len(query.split())
+    
+    return {
+        "top_score": top_score,
+        "mean_score": mean_score,
+        "margin": margin,
+        "agreement_ratio": agreement_ratio,
+        "query_len": query_len
+    }
+```
+
+Testing feature extraction:
+
+```python
+query = "Do unused vacation days carry over?"
+retrieved = retrieve(query, top_k=3)
+features = extract_features(query, retrieved)
+print(features)
+```
+
+Creating a small labeled calibration set
+
+To make abstention useful, thresholds should be learned from examples.
+
+We will create a toy dataset with:
+
+• answerable queries → the corpus contains a clear answer  
+• unanswerable queries → the corpus does not contain the answer, or the query is too ambiguous
+
+```python
+labeled_queries = [
+    ("How many remote days are allowed each week?", 1),
+    ("When does health insurance begin for new hires?", 1),
+    ("Do vacation days carry over to next year?", 1),
+    ("How often can laptops be replaced?", 1),
+    ("What is required before international travel?", 1),
+    ("Who approves travel expenses above 500 dollars?", 1),
+    
+    ("What is the parental leave policy?", 0),
+    ("Can contractors work remotely?", 0),
+    ("What is the dental insurance deductible?", 0),
+    ("How do I request a company car?", 0),
+    ("What is the salary review cycle?", 0),
+    ("Can I carry over sick days?", 0),
+]
+```
+
+Turning retrieval signals into training data
+
+```python
+import pandas as pd
+
+rows = []
+
+for query, label in labeled_queries:
+    retrieved = retrieve(query, top_k=3)
+    feats = extract_features(query, retrieved)
+    feats["query"] = query
+    feats["label"] = label
+    rows.append(feats)
+
+df = pd.DataFrame(rows)
+print(df)
+```
+
+Training a lightweight answerability classifier
+
+A logistic regression model is enough for this layer.
+
+It is fast, interpretable, and easy to recalibrate.
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+feature_cols = ["top_score", "mean_score", "margin", "agreement_ratio", "query_len"]
+
+X = df[feature_cols].values
+y = df["label"].values
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.33, random_state=42, stratify=y
+)
+
+clf = LogisticRegression()
+clf.fit(X_train, y_train)
+
+preds = clf.predict(X_test)
+print(classification_report(y_test, preds))
+```
+
+In a real project, the dataset should be larger and should include realistic failure cases:
+
+• partial matches  
+• outdated chunks  
+• conflicting chunks  
+• broad questions with no single answer  
+• queries using internal jargon
+
+Scoring answerability at runtime
+
+Now we wrap retrieval and prediction into one function.
+
+```python
+def answerability_score(query, top
+[2026-06-25T03:50:20.187+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-25T03:50:20.204+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=etl_single_dag, task_id=write_article.write_task, run_id=manual__2026-06-25T03:49:33.482881+00:00, execution_date=20260625T034933, start_date=20260625T034948, end_date=20260625T035020
+[2026-06-25T03:50:20.218+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2026-06-25T03:50:20.226+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-06-25T03:50:20.227+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
