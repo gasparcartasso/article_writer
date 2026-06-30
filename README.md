@@ -1,4 +1,4 @@
-## Pasos para probar lanzar Airflow
+## Pasos para lanzar Airflow
 
 1. **Clonar el repositorio**
    ```bash
