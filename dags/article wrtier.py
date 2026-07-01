@@ -9,6 +9,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from dotenv import load_dotenv
+import json
+import boto3
 
 load_dotenv()
 
@@ -91,30 +93,30 @@ def get_article(**context):
         temperature=0.6)
     return message.choices[0].message.to_dict()['content']
 
-GMAIL_USER = os.getenv("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
-to_email="matedataandai@gmail.com"
-subject="this weeks article for medium"
 
-def send_email(to_email=to_email, subject=subject, **context):
+def save_s3(**context):
     body = context['task_instance'].xcom_pull(task_ids='write_article.write_task')
-    # Create the email
-    msg = MIMEMultipart()
-    msg["From"] = GMAIL_USER
-    msg["To"] = to_email
-    msg["Subject"] = subject
+    aws_access_key_id = os.getenv("aws_access_key_id")
+    aws_secret_access_key = os.getenv("aws_secret_access_key")
 
-    msg.attach(MIMEText(body, "plain"))
-
-    # Connect to Gmail SMTP server
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-        server.send_message(msg)
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name="ap-southeast-2"
+    )
+    unique_id= str(int(datetime.now().timestamp() * 1000))
+    data = {"id": unique_id, "text": body}
+    s3.put_object(
+    Bucket="articlewriterstorage-929453768620-ap-southeast-2-an",
+    Key=unique_id,
+    Body=json.dumps(data)
+)
 
 
 with DAG(
     dag_id="etl_single_dag",
-    start_date=datetime(2026, 1, 1),
+    start_date=datetime(2026, 7, 1),
     schedule="@daily",
     catchup=False,
 ) as dag:
@@ -155,12 +157,12 @@ with DAG(
         )
 
     # ---- LOAD ----
-    with TaskGroup("send_email") as send_email_group:
-        send_email_task = PythonOperator(
-            task_id="send_email_task",
-            python_callable=send_email,
+    with TaskGroup("save_s3") as save_s3_group:
+        save_s3_task = PythonOperator(
+            task_id="save_s3_task",
+            python_callable=save_s3,
         )
 
     extract_top_group >> body_top_group
     extract_previous_group >> body_previous_group
-    [body_top_group, body_previous_group] >> write_article_group >> send_email_group
+    [body_top_group, body_previous_group] >> write_article_group >> save_s3_group
