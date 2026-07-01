@@ -21,7 +21,7 @@ COPY --chown=airflow:root pyproject.toml uv.lock ./
 # Create a venv that can still see Airflow's own installed packages
 # (--system-site-packages), then install your locked deps into it
 RUN uv venv --system-site-packages .venv && \
-    uv sync --frozen --no-cache
+    uv sync --no-cache
 
 # Expose the synced packages to the base image's Python/Airflow CLI
 # without touching PATH (so `airflow ...` entrypoints keep working)

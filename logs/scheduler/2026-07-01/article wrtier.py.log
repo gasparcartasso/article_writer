@@ -1,0 +1,63 @@
+[2026-07-01T01:53:07.260+0000] {processor.py:161} INFO - Started process (PID=166) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:53:07.261+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:53:07.263+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:53:07.263+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:53:07.714+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:53:07.723+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:53:07.723+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:53:07.729+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:53:07.729+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:53:07.734+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.477 seconds
+[2026-07-01T01:53:37.980+0000] {processor.py:161} INFO - Started process (PID=171) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:53:37.981+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:53:37.983+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:53:37.982+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:53:38.218+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:53:38.290+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:53:38.290+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:53:38.337+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:53:38.337+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:53:38.342+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.368 seconds
+[2026-07-01T01:54:08.603+0000] {processor.py:161} INFO - Started process (PID=187) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:54:08.604+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:54:08.606+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:54:08.605+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:54:08.818+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:54:08.826+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:54:08.826+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:54:08.831+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:54:08.831+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:54:08.836+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.239 seconds
+[2026-07-01T01:54:38.897+0000] {processor.py:161} INFO - Started process (PID=194) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:54:38.898+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:54:38.900+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:54:38.899+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:54:39.124+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:54:39.133+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:54:39.133+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:54:39.139+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:54:39.139+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:54:39.144+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.254 seconds
+[2026-07-01T01:55:09.373+0000] {processor.py:161} INFO - Started process (PID=199) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:55:09.374+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:55:09.375+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:55:09.375+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:55:09.602+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:55:09.610+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:55:09.610+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:55:09.615+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:55:09.615+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:55:09.620+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.253 seconds
+[2026-07-01T01:55:39.651+0000] {processor.py:161} INFO - Started process (PID=204) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:55:39.652+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:55:39.654+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:55:39.653+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:55:39.866+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:55:39.873+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:55:39.873+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:55:39.880+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:55:39.880+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:55:39.924+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.279 seconds
+[2026-07-01T01:56:10.181+0000] {processor.py:161} INFO - Started process (PID=209) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:56:10.182+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:56:10.183+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:56:10.183+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:56:10.397+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:56:10.405+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:56:10.405+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:56:10.451+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:56:10.451+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:56:10.456+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.279 seconds
+[2026-07-01T01:56:40.483+0000] {processor.py:161} INFO - Started process (PID=214) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:56:40.483+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:56:40.485+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:56:40.485+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:56:40.713+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:56:40.759+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:56:40.759+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:56:40.764+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:56:40.764+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:56:40.769+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.293 seconds
+[2026-07-01T01:57:11.065+0000] {processor.py:161} INFO - Started process (PID=219) to work on /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:57:11.065+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/article wrtier.py for tasks to queue
+[2026-07-01T01:57:11.066+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:57:11.066+0000] {dagbag.py:545} INFO - Filling up the DagBag from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:57:11.307+0000] {processor.py:840} INFO - DAG(s) 'etl_single_dag' retrieved from /opt/airflow/dags/article wrtier.py
+[2026-07-01T01:57:11.315+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:57:11.315+0000] {dag.py:3096} INFO - Sync 1 DAGs
+[2026-07-01T01:57:11.321+0000] {logging_mixin.py:188} INFO - [2026-07-01T01:57:11.321+0000] {dag.py:3954} INFO - Setting next_dagrun for etl_single_dag to 2026-07-01 00:00:00+00:00, run_after=2026-07-02 00:00:00+00:00
+[2026-07-01T01:57:11.326+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/article wrtier.py took 0.262 seconds
