@@ -4,7 +4,7 @@ USER airflow
 
 WORKDIR /opt/airflow/app
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.26 /uv /usr/local/bin/uv
+RUN pip install --no-cache-dir "uv==0.11.26"
 
 COPY --chown=airflow:root pyproject.toml uv.lock ./
 
