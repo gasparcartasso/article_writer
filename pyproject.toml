@@ -6,7 +6,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.84.0",
-    "apache-airflow>=3.1.8",
     "boto3>=1.43.38",
     "dotenv>=0.9.9",
     "google>=3.0.0",
@@ -17,3 +16,4 @@ dependencies = [
     "openai>=2.29.0",
     "requests>=2.32.5",
 ]
+
